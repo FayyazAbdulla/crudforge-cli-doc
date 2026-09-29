@@ -1,0 +1,302 @@
+---
+/**
+ * Custom splash hero — dark product landing matching the CRUDForge mock.
+ * Registered via starlight.components.Hero
+ */
+---
+
+<section class="cf-hero" aria-labelledby="_top">
+  <div class="cf-hero__glow" aria-hidden="true"></div>
+  <div class="cf-hero__terrain" aria-hidden="true"></div>
+
+  <div class="cf-hero__grid">
+    <div class="cf-hero__copy">
+      <h1 id="_top" data-page-title class="cf-hero__title">
+        CRUD<span class="cf-hero__title-accent">Forge</span>
+      </h1>
+      <p class="cf-hero__subtitle">Fuse Angular CRUD Generator from JDL</p>
+      <p class="cf-hero__desc">
+        Generate production-ready Fuse + Angular admin CRUD modules in seconds.
+      </p>
+      <div class="cf-hero__actions">
+        <a class="cf-btn cf-btn--primary" href="/getting-started/introduction/">
+          Get started
+          <span class="cf-btn__arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="cf-btn cf-btn--ghost" href="/features/overview/">
+          <svg class="cf-btn__svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.17 2.06A13.1 13.1 0 0 0 19 1.87a12.94 12.94 0 0 0-7 2.05 12.94 12.94 0 0 0-7-2 13.1 13.1 0 0 0-2.17.19 1 1 0 0 0-.83 1v12a1 1 0 0 0 1.17 1 10.9 10.9 0 0 1 8.25 1.91l.12.07h.11a.91.91 0 0 0 .7 0h.11l.12-.07A10.899 10.899 0 0 1 20.83 16 1 1 0 0 0 22 15V3a1 1 0 0 0-.83-.94ZM11 15.35a12.87 12.87 0 0 0-6-1.48H4v-10c.333-.02.667-.02 1 0a10.86 10.86 0 0 1 6 1.8v9.68Zm9-1.44h-1a12.87 12.87 0 0 0-6 1.48V5.67a10.86 10.86 0 0 1 6-1.8c.333-.02.667-.02 1 0v10.04Z"/></svg>
+          Features
+        </a>
+        <a class="cf-btn cf-btn--ghost" href="/guides/cli/">
+          <svg class="cf-btn__svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 10h1a1 1 0 1 0 0-2H9a1 1 0 0 0 0 2Zm0 2a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9Zm11-3.06a1.3 1.3 0 0 0-.06-.27v-.09c-.05-.1-.11-.2-.19-.28l-6-6a1.07 1.07 0 0 0-.28-.19h-.09a.88.88 0 0 0-.33-.11H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8.94Zm-6-3.53L16.59 8H15a1 1 0 0 1-1-1V5.41ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v3a3 3 0 0 0 3 3h3v9Z"/></svg>
+          CLI reference
+        </a>
+      </div>
+    </div>
+
+    <div class="cf-hero__visual">
+      <div class="cf-hero__angular" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="160" height="160" fill="none">
+          <path
+            d="M32 4L8 14l4 34 20 12 20-12 4-34L32 4z"
+            stroke="currentColor"
+            stroke-width="2.5"
+            fill="rgba(121,30,255,0.12)"
+          />
+          <path d="M32 16L20 44h7.2l1.6-4.8H35l1.6 4.8H44L32 16zm0 10.5l3.2 9.5h-6.4L32 26.5z" fill="currentColor" />
+        </svg>
+      </div>
+      <div class="cf-terminal" role="img" aria-label="CLI generate success output">
+        <div class="cf-terminal__chrome">
+          <span class="cf-terminal__dot cf-terminal__dot--r"></span>
+          <span class="cf-terminal__dot cf-terminal__dot--y"></span>
+          <span class="cf-terminal__dot cf-terminal__dot--g"></span>
+          <span class="cf-terminal__title">crudforge</span>
+        </div>
+        <pre class="cf-terminal__body"><code><span class="cf-terminal__prompt">$</span> <span class="cf-terminal__cmd">npx @crudforge/cli generate</span>
+<span class="cf-terminal__ok">✓</span> Book, Author
+<span class="cf-terminal__ok">✓</span> Fuse shell ready
+<span class="cf-terminal__ok">✓</span> Done</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cf-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-inline: 0;
+    margin-block: -1.5rem 0;
+    width: 100%;
+    padding: clamp(2.25rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3.5rem) clamp(3.25rem, 8vw, 5.5rem);
+    color: var(--cf-hero-fg, #f4f4f8);
+    background: var(--cf-hero-bg, #07070c);
+    border-radius: 0;
+  }
+
+  .cf-hero__glow {
+    position: absolute;
+    inset: -20% 10% auto auto;
+    width: min(55vw, 28rem);
+    height: min(55vw, 28rem);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(121, 30, 255, 0.45), transparent 68%);
+    filter: blur(8px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .cf-hero__terrain {
+    position: absolute;
+    inset: auto 0 0;
+    height: 38%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(to top, transparent, transparent 40%),
+      radial-gradient(ellipse 120% 80% at 50% 120%, rgba(121, 30, 255, 0.45), transparent 55%),
+      linear-gradient(165deg, transparent 40%, var(--cf-hero-terrain-mid, #12081f) 70%, transparent 100%);
+    clip-path: polygon(0 55%, 8% 48%, 18% 58%, 28% 42%, 40% 52%, 52% 38%, 64% 50%, 76% 35%, 88% 48%, 100% 40%, 100% 100%, 0 100%);
+    opacity: 0.95;
+  }
+
+  .cf-hero__terrain::after {
+    content: '';
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    bottom: 28%;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, #791eff, #22d3ee, #791eff, transparent);
+    box-shadow: 0 0 24px rgba(121, 30, 255, 0.8);
+  }
+
+  .cf-hero__grid {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: center;
+    max-width: 92rem;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 50rem) {
+    .cf-hero__grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .cf-hero__grid {
+      gap: 4rem;
+    }
+    .cf-terminal {
+      width: min(100%, 30rem);
+    }
+  }
+
+  .cf-hero__title {
+    margin: 0;
+    font-size: clamp(2.75rem, 6vw, 4.25rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--cf-hero-title, #fff);
+  }
+
+  .cf-hero__title-accent {
+    background: linear-gradient(115deg, #c4a8ff 0%, #791eff 45%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .cf-hero__subtitle {
+    margin: 0.85rem 0 0;
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+    font-weight: 650;
+    color: #0891b2;
+  }
+
+  :global(:root[data-theme='dark']) .cf-hero__subtitle {
+    color: #22d3ee;
+  }
+
+  .cf-hero__desc {
+    margin: 0.75rem 0 0;
+    max-width: 36ch;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--cf-hero-muted, #a1a1b5);
+  }
+
+  .cf-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.1rem;
+    align-items: center;
+    margin-top: 1.6rem;
+  }
+
+  .cf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 999px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  }
+
+  .cf-btn--primary {
+    padding: 0.7rem 1.25rem;
+    color: #fff !important;
+    background: linear-gradient(105deg, #791eff, #5b21b6 55%, #2563eb);
+    box-shadow: 0 0 0 1px rgba(196, 168, 255, 0.35), 0 10px 30px rgba(121, 30, 255, 0.45);
+  }
+
+  .cf-btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 1px rgba(196, 168, 255, 0.5), 0 14px 36px rgba(121, 30, 255, 0.55);
+  }
+
+  .cf-btn--ghost {
+    padding: 0.45rem 0.35rem;
+    color: var(--cf-hero-ghost, #d4d4e0) !important;
+  }
+
+  .cf-btn--ghost:hover {
+    color: var(--cf-hero-ghost-hover, #fff) !important;
+  }
+
+  .cf-btn__svg {
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+
+  .cf-hero__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 16rem;
+  }
+
+  .cf-hero__angular {
+    position: absolute;
+    right: -4%;
+    top: 50%;
+    transform: translateY(-52%);
+    color: #9b5cff;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 28px rgba(121, 30, 255, 0.75));
+    pointer-events: none;
+  }
+
+  .cf-terminal {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 26rem);
+    border-radius: 0.9rem;
+    background: var(--cf-hero-terminal-bg, rgba(12, 12, 20, 0.92));
+    border: 1px solid var(--cf-hero-terminal-border, rgba(121, 30, 255, 0.55));
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.12),
+      0 0 40px rgba(121, 30, 255, 0.35),
+      0 24px 48px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+    transform: perspective(900px) rotateY(-6deg) rotateX(2deg);
+  }
+
+  @media (max-width: 49.99rem) {
+    .cf-terminal {
+      transform: none;
+    }
+    .cf-hero__angular {
+      right: 0;
+      width: 7rem;
+      opacity: 0.55;
+    }
+  }
+
+  .cf-terminal__chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .cf-terminal__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+  }
+  .cf-terminal__dot--r { background: #ff5f57; }
+  .cf-terminal__dot--y { background: #febc2e; }
+  .cf-terminal__dot--g { background: #28c840; }
+
+  .cf-terminal__title {
+    margin-left: 0.5rem;
+    font-size: 0.7rem;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .cf-terminal__body {
+    margin: 0;
+    padding: 1rem 1.1rem 1.2rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.86rem;
+    line-height: 1.65;
+    color: #e5e7eb;
+    white-space: pre-wrap;
+  }
+
+  .cf-terminal__prompt { color: #c4a8ff; }
+  .cf-terminal__cmd { color: #e879f9; }
+  .cf-terminal__ok { color: #4ade80; }
+</style>

@@ -27,6 +27,9 @@ export default defineConfig({
         },
       ],
       customCss: ['./src/styles/brand.css'],
+      components: {
+        Hero: './src/components/CustomHero.astro',
+      },
       editLink: {
         baseUrl: 'https://github.com/TeamCodeMe/crud-fordge-doc/edit/main/',
       },
@@ -85,6 +88,24 @@ export default defineConfig({
         {
           tag: 'meta',
           attrs: { name: 'theme-color', content: BRAND },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image',
+            content: 'https://docs.crudforge.dev/og-poster.jpg',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'twitter:image',
+            content: 'https://docs.crudforge.dev/og-poster.jpg',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: { name: 'twitter:card', content: 'summary_large_image' },
         },
       ],
     }),

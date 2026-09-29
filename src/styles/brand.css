@@ -1,6 +1,6 @@
 /*
   CRUDForge docs brand — aligned with logo violet #791EFF.
-  Dark-first shell; purple accents for links, active nav, and CTAs.
+  Respects Starlight light / dark / auto theme toggle.
 */
 
 :root {
@@ -30,25 +30,184 @@
   --sl-color-text-accent: var(--cf-brand-soft);
 }
 
-/* Hero / landing atmosphere */
-.hero {
-  position: relative;
-  isolation: isolate;
+/* Splash: use nearly full viewport (Starlight default ~67.5rem leaves huge gutters) */
+html[data-has-hero] {
+  --sl-content-width: min(92rem, calc(100vw - 2rem));
+  --sl-content-margin-inline: 0;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: -20% -10% auto;
-  height: 70%;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(121, 30, 255, 0.35), transparent 55%),
-    radial-gradient(circle at 80% 10%, rgba(155, 92, 255, 0.22), transparent 50%);
-  pointer-events: none;
+html[data-has-hero] .content-panel {
+  padding-inline: 0;
+  max-width: none;
 }
 
-.sl-markdown-content a:not(.sl-link-button) {
+html[data-has-hero] .content-panel > .sl-container {
+  max-width: none;
+  width: 100%;
+  margin-inline: 0;
+}
+
+html[data-has-hero] .sl-markdown-content {
+  max-width: min(92rem, calc(100% - 2rem));
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3.5rem);
+  box-sizing: border-box;
+}
+
+html[data-has-hero] .cf-install {
+  margin-inline: auto;
+}
+
+/* ---- Splash page: dark theme ---- */
+:root[data-theme='dark'] [data-has-hero] .main-pane,
+:root[data-theme='dark'] [data-has-hero] .content-panel {
+  background: transparent;
+}
+
+:root[data-theme='dark'] [data-has-hero] .sl-markdown-content h2 {
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+:root[data-theme='dark'] [data-has-hero] .card {
+  background: rgba(16, 16, 28, 0.9);
+  border: 1px solid rgba(121, 30, 255, 0.35);
+  border-radius: 0.9rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme='dark'] [data-has-hero] .card:hover {
+  border-color: rgba(155, 92, 255, 0.55);
+}
+
+:root[data-theme='dark'] [data-has-hero] .card .title {
+  color: #f4f4f8;
+}
+
+:root[data-theme='dark'] .cf-install {
+  background: rgba(12, 12, 20, 0.95);
+  border: 1px solid rgba(121, 30, 255, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.08),
+    0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme='dark'] .cf-install__cmd {
+  color: #e5e7eb;
+}
+
+/* ---- Splash page: light theme ---- */
+:root[data-theme='light'] [data-has-hero] .sl-markdown-content h2 {
+  color: #14141f;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+:root[data-theme='light'] [data-has-hero] .card {
+  background: #fff;
+  border: 1px solid rgba(121, 30, 255, 0.18);
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 28px rgba(75, 15, 196, 0.08);
+}
+
+:root[data-theme='light'] [data-has-hero] .card:hover {
+  border-color: rgba(121, 30, 255, 0.4);
+}
+
+:root[data-theme='light'] [data-has-hero] .card .title {
+  color: #14141f;
+}
+
+:root[data-theme='light'] .cf-install {
+  background: #fff;
+  border: 1px solid rgba(121, 30, 255, 0.22);
+  box-shadow: 0 12px 32px rgba(75, 15, 196, 0.1);
+}
+
+:root[data-theme='light'] .cf-install__cmd {
+  color: #1f2937;
+}
+
+/* Shared install pill */
+.cf-install {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem 0.85rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 2.75rem auto 1rem;
+  padding: 0.7rem 0.85rem 0.7rem 1.15rem;
+  border-radius: 999px;
+}
+
+.cf-install__cmd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  background: transparent;
+  padding: 0;
+  border: 0;
+}
+
+.cf-install__or {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: lowercase;
+}
+
+.cf-install__copy {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(105deg, #791eff, #4f46e5);
+}
+
+.cf-install__copy:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 40rem) {
+  .cf-install {
+    border-radius: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}
+
+/* Hero theme tokens (CustomHero.astro) */
+.cf-hero {
+  --cf-hero-bg: #07070c;
+  --cf-hero-fg: #f4f4f8;
+  --cf-hero-muted: #a1a1b5;
+  --cf-hero-ghost: #d4d4e0;
+  --cf-hero-ghost-hover: #fff;
+  --cf-hero-title: #fff;
+  --cf-hero-terminal-bg: rgba(12, 12, 20, 0.92);
+  --cf-hero-terminal-border: rgba(121, 30, 255, 0.55);
+  --cf-hero-terrain-mid: #12081f;
+}
+
+:root[data-theme='light'] .cf-hero {
+  --cf-hero-bg: linear-gradient(165deg, #f6f0ff 0%, #eef2ff 45%, #f8fafc 100%);
+  --cf-hero-fg: #14141f;
+  --cf-hero-muted: #4b5563;
+  --cf-hero-ghost: #374151;
+  --cf-hero-ghost-hover: #111827;
+  --cf-hero-title: #14141f;
+  --cf-hero-terminal-bg: rgba(15, 15, 24, 0.94);
+  --cf-hero-terminal-border: rgba(121, 30, 255, 0.45);
+  --cf-hero-terrain-mid: #ddd6fe;
+}
+
+.sl-markdown-content a:not(.sl-link-button):not(.cf-btn) {
   color: var(--sl-color-text-accent);
   text-underline-offset: 0.18em;
 }
@@ -57,7 +216,6 @@
   border-radius: 0.35rem;
 }
 
-/* Site title logo sizing */
 .site-title img {
   height: 2.25rem;
   width: auto;
@@ -65,7 +223,6 @@
   object-fit: contain;
 }
 
-/* Callout polish */
 .starlight-aside {
   border-radius: 0.75rem;
 }
