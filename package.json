@@ -12,7 +12,9 @@
     "astro": "astro",
     "sync:readme": "node scripts/sync-from-cli-readme.js",
     "check": "astro check",
-    "design:audit": "node scripts/design-audit.js"
+    "design:audit": "node scripts/design-audit.js",
+    "shots:capture": "node scripts/capture-screenshots.mjs",
+    "shots:capture:iam": "CAPTURE_IAM=1 node scripts/capture-screenshots.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.42.4",

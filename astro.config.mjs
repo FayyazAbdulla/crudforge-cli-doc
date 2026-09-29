@@ -40,6 +40,24 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Features',
+          items: [
+            { label: 'Overview', slug: 'features/overview' },
+            { label: 'Entity CRUD', slug: 'features/entity-crud' },
+            { label: 'IAM overlay', slug: 'features/iam' },
+            { label: 'Auth UX', slug: 'features/auth-ux' },
+          ],
+        },
+        {
+          label: 'Customization',
+          items: [
+            { label: 'UI modes', slug: 'customization/ui-modes' },
+            { label: 'Theme & branding', slug: 'customization/theme-branding' },
+            { label: 'Generate toggles', slug: 'customization/generate-toggles' },
+            { label: 'Output layout', slug: 'customization/output-layout' },
+          ],
+        },
+        {
           label: 'Guides',
           items: [
             { label: 'CLI commands', slug: 'guides/cli' },
