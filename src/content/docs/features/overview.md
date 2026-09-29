@@ -56,6 +56,8 @@ Paginated table, field search, New / filter / export / pin / flag actions.
 
 ![Roles](../assets/screenshots/11-iam-roles.png)
 
+Users, roles, and **screen access** matrices — see [IAM overlay](/features/iam/) and [Users, roles & screen access](/guides/iam-access/).
+
 ## Dig deeper
 
 - [Entity CRUD](/features/entity-crud/)

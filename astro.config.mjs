@@ -63,6 +63,7 @@ export default defineConfig({
             { label: 'CLI commands', slug: 'guides/cli' },
             { label: 'Configuration', slug: 'guides/configuration' },
             { label: 'Keycloak & IAM', slug: 'guides/auth-keycloak' },
+            { label: 'Users, roles & screen access', slug: 'guides/iam-access' },
             { label: 'Session & disabled account', slug: 'guides/session' },
             { label: 'QA & Playwright', slug: 'guides/qa' },
             { label: 'Branding & theme', slug: 'guides/branding' },

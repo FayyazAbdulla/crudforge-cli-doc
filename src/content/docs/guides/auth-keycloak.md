@@ -30,8 +30,10 @@ iam:
 
 ## Generated packs
 
-- `src/app/core/auth/` — sign-in, interceptor, guards, ACL
-- `src/app/core/user-management/` — users / roles UI
+- `src/app/core/auth/` — sign-in, interceptor, guards, `AccessControlService`, ACL pipes
+- `src/app/core/user-management/` — Users, Roles, role/user permission matrices
+
+Operate those screens day-to-day: [Users, roles & screen access](/guides/iam-access/). Product overview: [IAM overlay](/features/iam/).
 
 ## Secrets
 
