@@ -1,0 +1,14 @@
+---
+description: Always-on rules for the CRUDForge documentation site (Starlight).
+alwaysApply: true
+---
+
+# CRUDForge docs
+
+- This repo is **product documentation** (Astro Starlight), not the generator and not a Fuse app.
+- Brand primary is `#791EFF`. Logos live in `public/logo.png` and `public/logo-mark.png`.
+- Verify CLI flags and config keys against the sibling `crud-fordge` repo before publishing.
+- Never commit secrets or live Keycloak passwords.
+- Prefer short guides + reference tables; link to the CLI README for deep changelog noise.
+- After meaningful doc changes: `npm run design:audit` and `npm run build`.
+- Agent specialists: `.cursor/agents/` — architect → content → design → qa → deploy.

@@ -1,0 +1,71 @@
+/*
+  CRUDForge docs brand — aligned with logo violet #791EFF.
+  Dark-first shell; purple accents for links, active nav, and CTAs.
+*/
+
+:root {
+  --cf-brand: #791eff;
+  --cf-brand-soft: #9b5cff;
+  --cf-brand-deep: #4b0fc4;
+  --cf-ink: #1a1a1a;
+  --cf-muted: #6b7280;
+  --sl-color-accent-low: #2a1060;
+  --sl-color-accent: var(--cf-brand);
+  --sl-color-accent-high: #c4a8ff;
+  --sl-font: 'Geist', 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #efe6ff;
+  --sl-color-accent: var(--cf-brand);
+  --sl-color-accent-high: var(--cf-brand-deep);
+  --sl-color-text-accent: var(--cf-brand-deep);
+}
+
+:root[data-theme='dark'] {
+  --sl-color-bg: #07070c;
+  --sl-color-bg-nav: #0c0c14;
+  --sl-color-bg-sidebar: #0a0a12;
+  --sl-color-hairline: #1f1f2e;
+  --sl-color-text-accent: var(--cf-brand-soft);
+}
+
+/* Hero / landing atmosphere */
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 70%;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(121, 30, 255, 0.35), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(155, 92, 255, 0.22), transparent 50%);
+  pointer-events: none;
+}
+
+.sl-markdown-content a:not(.sl-link-button) {
+  color: var(--sl-color-text-accent);
+  text-underline-offset: 0.18em;
+}
+
+.sl-markdown-content code {
+  border-radius: 0.35rem;
+}
+
+/* Site title logo sizing */
+.site-title img {
+  height: 2.25rem;
+  width: auto;
+  max-width: 11rem;
+  object-fit: contain;
+}
+
+/* Callout polish */
+.starlight-aside {
+  border-radius: 0.75rem;
+}

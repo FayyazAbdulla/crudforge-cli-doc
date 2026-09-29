@@ -1,0 +1,45 @@
+---
+title: CRUDForge Docs
+description: Generate Fuse Angular CRUD apps from JDL — auth, IAM, and clean admin UX.
+template: splash
+hero:
+  tagline: Forged C — generate organized Angular apps from your domain model.
+  actions:
+    - text: Get started
+      link: /getting-started/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: CLI reference
+      link: /guides/cli/
+      icon: document
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What you get
+
+<CardGrid stagger>
+  <Card title="JDL → Fuse Angular" icon="rocket">
+    Generate list, card, form, detail, filters, and services into a Fuse starter with clean layout.
+  </Card>
+  <Card title="Keycloak overlay" icon="seti:lock">
+    Optional auth + IAM packs — never model User/Role as JDL entities.
+  </Card>
+  <Card title="Session pack" icon="approve-check">
+    Stay signed in by default, resilient refresh, optional disabled-account overlay.
+  </Card>
+  <Card title="Agent-ready" icon="seti:folder">
+    Generated apps ship `AGENT_README.md` + `docs/ai/*` for humans and coding agents.
+  </Card>
+</CardGrid>
+
+## Quick path
+
+```bash
+npm install -g @crudforge/cli
+crudforge init-config
+crudforge generate ./example.jdl ./my-app --fuse --clean-layout
+```
+
+Then open the [first app guide](/getting-started/first-app/).
