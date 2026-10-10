@@ -43,6 +43,13 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Interactive Tools',
+          items: [
+            { label: '✨ Open Studio (Live)', link: '/studio', badge: { text: 'New', variant: 'tip' } },
+            { label: 'Studio User Guide', slug: 'guides/studio' },
+          ],
+        },
+        {
           label: 'Features',
           items: [
             { label: 'Overview', slug: 'features/overview' },
@@ -65,6 +72,7 @@ export default defineConfig({
           items: [
             { label: 'CLI commands', slug: 'guides/cli' },
             { label: 'Configuration', slug: 'guides/configuration' },
+            { label: 'Schema & Config Studio', slug: 'guides/studio' },
             { label: 'Keycloak & IAM', slug: 'guides/auth-keycloak' },
             { label: 'Users, roles & screen access', slug: 'guides/iam-access' },
             { label: 'Session & disabled account', slug: 'guides/session' },

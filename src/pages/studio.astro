@@ -1,0 +1,3315 @@
+---
+// src/pages/studio.astro
+// CRUDForge Studio — Authentic 100% Terminal Clone & JDL/GDL Schema Visualizer
+---
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUDForge Studio — JDL/GDL Visualizer & Full Terminal Clone</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- is:inline so JS-created ERD nodes (.diagram-node) receive styles -->
+  <style is:inline>
+    :root {
+      --cf-brand: #791EFF;
+      --cf-brand-light: #9B5CFF;
+      --cf-brand-soft: #C4A8FF;
+      --cf-brand-glow: rgba(121, 30, 255, 0.45);
+      --cf-cyan: #22D3EE;
+      --cf-cyan-glow: rgba(34, 211, 238, 0.35);
+      --cf-emerald: #10B981;
+      --cf-amber: #F59E0B;
+      --cf-rose: #F43F5E;
+      
+      --term-bg: #0C0C12;
+      --term-header-bg: #161622;
+      --term-border: #262638;
+      --term-fg: #ECEFF4;
+      --term-cursor: #22D3EE;
+      --term-green: #4ADE80;
+      --term-blue: #60A5FA;
+      --term-yellow: #FBBF24;
+      --term-pink: #F472B6;
+      --term-purple: #C084FC;
+      --term-dim: #6B7280;
+      
+      --bg-base: #06060A;
+      --bg-surface: #0C0C14;
+      --bg-surface-elevated: #141422;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Outfit', var(--font-sans);
+      --font-mono: 'Fira Code', ui-monospace, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: #F3F4F6;
+      font-family: var(--font-sans);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Studio Navigation */
+    header.studio-header {
+      height: 52px;
+      min-height: 52px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .brand-logo {
+      height: 30px;
+      width: auto;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-title span {
+      color: var(--cf-brand-light);
+    }
+
+    .studio-badge {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(121, 30, 255, 0.2);
+      border: 1px solid var(--cf-brand-glow);
+      color: var(--cf-brand-light);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .mode-tabs {
+      display: flex;
+      background: var(--bg-base);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .mode-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #9CA3AF;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.15s ease;
+    }
+
+    .mode-tab:hover {
+      color: #fff;
+    }
+
+    .mode-tab.active {
+      background: var(--cf-brand);
+      color: #fff;
+      box-shadow: 0 0 16px var(--cf-brand-glow);
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .selector-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface-elevated);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .selector-label {
+      font-size: 0.7rem;
+      color: #6B7280;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    select.studio-select {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select.studio-select option {
+      background: var(--bg-surface-elevated);
+      color: #fff;
+    }
+
+    .format-pills {
+      display: flex;
+      background: var(--bg-surface-elevated);
+      border-radius: 6px;
+      padding: 2px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .format-pill {
+      padding: 3px 9px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #6B7280;
+      cursor: pointer;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      transition: all 0.15s;
+    }
+
+    .format-pill.active {
+      background: rgba(34, 211, 238, 0.15);
+      color: var(--cf-cyan);
+      border: 1px solid var(--cf-cyan-glow);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: #F3F4F6;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .action-btn:hover {
+      background: #1C1C30;
+      border-color: var(--cf-brand-glow);
+      transform: translateY(-1px);
+    }
+
+    .action-btn--primary {
+      background: linear-gradient(135deg, var(--cf-brand), #5B21B6);
+      border-color: rgba(196, 168, 255, 0.4);
+      color: #fff;
+      box-shadow: 0 0 14px var(--cf-brand-glow);
+    }
+
+    /* Main Container */
+    main.studio-main {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .studio-view {
+      position: absolute;
+      inset: 0;
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .studio-view.active {
+      display: flex;
+    }
+
+    /* ========================================================================= */
+    /* VIEW 1: SCHEMA STUDIO (SPLIT PANE)                                        */
+    /* ========================================================================= */
+    .split-pane {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .pane-left {
+      width: 44%;
+      min-width: 320px;
+      max-width: 70%;
+      height: 100%;
+      background: #090912;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .pane-divider {
+      width: 6px;
+      background: transparent;
+      cursor: col-resize;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 44%;
+      z-index: 50;
+      transition: background 0.2s;
+    }
+
+    .pane-divider:hover, .pane-divider.dragging {
+      background: var(--cf-brand);
+      box-shadow: 0 0 12px var(--cf-brand-glow);
+    }
+
+    .pane-right {
+      flex: 1;
+      height: 100%;
+      background: #080810;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .editor-subheader {
+      height: 36px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-size: 0.76rem;
+      color: #6B7280;
+    }
+
+    .snippet-bar {
+      height: 32px;
+      background: #0B0B16;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 6px;
+    }
+
+    .snippet-btn {
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.04);
+      color: #D1D5DB;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .snippet-btn:hover {
+      background: var(--cf-brand);
+      color: #fff;
+      border-color: var(--cf-brand-glow);
+    }
+
+    .editor-stats {
+      display: flex;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .editor-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .editor-stat-val {
+      color: var(--cf-cyan);
+      font-weight: 600;
+    }
+
+    .editor-container {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      font-family: var(--font-mono);
+    }
+
+    .gutter-lines {
+      width: 46px;
+      background: #07070F;
+      color: #4B5563;
+      padding: 12px 8px 12px 0;
+      text-align: right;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .editor-textarea {
+      flex: 1;
+      height: 100%;
+      background: transparent;
+      border: none;
+      color: #E2E8F0;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      line-height: 1.6;
+      padding: 12px 16px;
+      outline: none;
+      resize: none;
+      white-space: pre;
+      overflow: auto;
+      tab-size: 2;
+    }
+
+    .validation-banner {
+      height: 30px;
+      background: rgba(16, 185, 129, 0.1);
+      border-top: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34D399;
+      font-size: 0.76rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+    }
+
+    .validation-banner.has-error {
+      background: rgba(244, 63, 94, 0.1);
+      border-top-color: rgba(244, 63, 94, 0.3);
+      color: #FB7185;
+    }
+
+    /* Diagram Canvas */
+    .diagram-toolbar {
+      height: 42px;
+      background: rgba(14, 14, 24, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      z-index: 10;
+    }
+
+    .diagram-tool-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tool-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      color: #9CA3AF;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+
+    .tool-btn:hover {
+      background: #1E1E34;
+      color: #fff;
+      border-color: var(--cf-brand-glow);
+    }
+
+    .zoom-level-text {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: #6B7280;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .diagram-canvas-viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(121, 30, 255, 0.06) 0%, transparent 65%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 24px 24px, 24px 24px;
+    }
+
+    .diagram-canvas-viewport:active {
+      cursor: grabbing;
+    }
+
+    .diagram-world {
+      position: absolute;
+      transform-origin: 0 0;
+      top: 0;
+      left: 0;
+      width: 10000px;
+      height: 10000px;
+      pointer-events: none;
+    }
+
+    #nodesContainer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    svg.relationship-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .diagram-node {
+      position: absolute;
+      pointer-events: auto;
+      background: #111122;
+      border: 1px solid rgba(121, 30, 255, 0.55);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(121, 30, 255, 0.18);
+      min-width: 200px;
+      width: max-content;
+      max-width: 280px;
+      font-size: 0.82rem;
+      user-select: none;
+      cursor: move;
+      z-index: 2;
+      overflow: hidden;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+
+    .diagram-node:hover {
+      border-color: rgba(155, 92, 255, 0.8);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 24px var(--cf-brand-glow);
+    }
+
+    .diagram-node.is-enum {
+      border-style: dashed;
+      border-color: rgba(34, 211, 238, 0.5);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px var(--cf-cyan-glow);
+    }
+
+    .node-header {
+      padding: 7px 12px;
+      background: linear-gradient(180deg, rgba(121, 30, 255, 0.25) 0%, rgba(121, 30, 255, 0.08) 100%);
+      border-bottom: 1px solid rgba(121, 30, 255, 0.3);
+      border-radius: 7px 7px 0 0;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .diagram-node.is-enum .node-header {
+      background: linear-gradient(180deg, rgba(34, 211, 238, 0.25) 0%, rgba(34, 211, 238, 0.08) 100%);
+      border-bottom-color: rgba(34, 211, 238, 0.3);
+      color: var(--cf-cyan);
+    }
+
+    .node-stereotype {
+      font-size: 0.65rem;
+      color: #6B7280;
+      font-weight: 500;
+    }
+
+    .node-fields {
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+    }
+
+    .node-field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .node-field-row:last-child {
+      border-bottom: none;
+    }
+
+    .field-name {
+      color: #E2E8F0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .field-name.required::after {
+      content: '*';
+      color: var(--cf-rose);
+      margin-left: 2px;
+    }
+
+    .field-type {
+      color: #A78BFA;
+      font-size: 0.72rem;
+      text-align: right;
+    }
+
+    .diagram-node.is-enum .node-fields .enum-val {
+      color: var(--cf-cyan);
+      font-weight: 600;
+    }
+
+    .canvas-legend {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(14, 14, 24, 0.9);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      color: #6B7280;
+      display: flex;
+      gap: 16px;
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* ========================================================================= */
+    /* VIEW 2: 100% REAL TERMINAL CLONE & CONFIG INSPECTOR                       */
+    /* ========================================================================= */
+    .config-studio-grid {
+      display: grid;
+      grid-template-columns: 820px 1fr;
+      width: 100%;
+      height: 100%;
+      background: #050509;
+      transition: grid-template-columns 0.2s ease;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .config-studio-grid.layout-split {
+      grid-template-columns: 820px 1fr;
+    }
+
+    .config-studio-grid.layout-gui {
+      grid-template-columns: 400px 1fr;
+    }
+
+    .config-studio-grid.layout-yaml {
+      grid-template-columns: 520px 1fr;
+    }
+
+    @media (max-width: 1400px) {
+      .config-studio-grid,
+      .config-studio-grid.layout-split {
+        grid-template-columns: 700px 1fr;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .config-studio-grid,
+      .config-studio-grid.layout-split,
+      .config-studio-grid.layout-gui,
+      .config-studio-grid.layout-yaml {
+        grid-template-columns: 440px 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .config-studio-grid,
+      .config-studio-grid.layout-split,
+      .config-studio-grid.layout-gui,
+      .config-studio-grid.layout-yaml {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+      }
+    }
+
+    /* Left Config Sidebar Wrapper */
+    .config-sidebar-wrapper {
+      background: #090912;
+      border-right: 1px solid var(--border-subtle);
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Subheader View Switcher */
+    .config-view-tabs-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #0D0D18;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      gap: 8px;
+    }
+
+    .config-view-tabs {
+      display: inline-flex;
+      align-items: center;
+      background: #06060C;
+      padding: 3px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      gap: 3px;
+    }
+
+    .config-view-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #9CA3AF;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .config-view-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .config-view-tab.active {
+      background: var(--cf-brand);
+      color: #fff;
+      box-shadow: 0 0 10px var(--cf-brand-glow);
+    }
+
+    .config-pane-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .config-mini-btn {
+      padding: 4px 9px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 5px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: #E2E8F0;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .config-mini-btn:hover {
+      background: #1C1C30;
+      border-color: var(--cf-brand-glow);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Config Content Body */
+    .config-content-body {
+      flex: 1;
+      height: calc(100% - 38px);
+      min-height: 0;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Layout States for Config Content Body */
+    .config-content-body.view-split {
+      display: grid !important;
+      grid-template-columns: 360px 1fr !important;
+      height: calc(100% - 38px) !important;
+      min-height: 0 !important;
+    }
+
+    @media (max-width: 1100px) {
+      .config-content-body.view-split {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: 1fr 1fr !important;
+      }
+    }
+
+    .config-content-body.view-gui .config-yaml-panel {
+      display: none !important;
+    }
+    .config-content-body.view-gui .config-controls-panel {
+      display: flex !important;
+      flex: 1;
+      width: 100%;
+      border-right: none;
+    }
+
+    .config-content-body.view-yaml .config-controls-panel {
+      display: none !important;
+    }
+    .config-content-body.view-yaml .config-yaml-panel {
+      display: flex !important;
+      flex: 1;
+      width: 100%;
+      border-left: none;
+    }
+
+    /* Left Config Controls Panel */
+    .config-controls-panel {
+      background: #090912;
+      border-right: 1px solid var(--border-subtle);
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Live YAML Code Panel */
+    .config-yaml-panel {
+      background: #070710;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      flex: 1;
+      border-left: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .yaml-editor-toolbar {
+      height: 32px;
+      min-height: 32px;
+      background: #0B0B16;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 0.72rem;
+      color: #6B7280;
+    }
+
+    .yaml-status-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #34D399;
+      font-weight: 600;
+    }
+
+    .status-pulse {
+      width: 6px;
+      height: 6px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #10B981;
+    }
+
+    .yaml-stats {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #9CA3AF;
+    }
+
+    .yaml-editor-container {
+      flex: 1;
+      height: calc(100% - 32px);
+      min-height: 0;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      font-family: var(--font-mono);
+    }
+
+    .yaml-textarea {
+      flex: 1;
+      height: 100%;
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #E2E8F0;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.55;
+      padding: 10px 14px;
+      outline: none;
+      resize: none;
+      white-space: pre;
+      overflow: auto;
+      tab-size: 2;
+      user-select: text;
+    }
+
+    .config-section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .config-section-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: #9CA3AF;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input.form-input, select.form-select {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      outline: none;
+      transition: border-color 0.15s;
+      user-select: text;
+    }
+
+    input.form-input:focus, select.form-select:focus {
+      border-color: var(--cf-brand-light);
+      box-shadow: 0 0 8px var(--cf-brand-glow);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3px 0;
+    }
+
+    .toggle-label-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toggle-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #E5E7EB;
+    }
+
+    .toggle-desc {
+      font-size: 0.66rem;
+      color: #6B7280;
+    }
+
+    .cf-switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 18px;
+    }
+
+    .cf-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #2D2D3D;
+      transition: .2s;
+      border-radius: 999px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 12px;
+      width: 12px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--cf-brand);
+      box-shadow: 0 0 10px var(--cf-brand-glow);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+
+    /* RIGHT SIDE: PURE REAL TERMINAL CLONE */
+    .real-terminal-wrapper {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #06060A;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .terminal-window {
+      flex: 1;
+      background: var(--term-bg);
+      border: 1px solid var(--term-border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(121, 30, 255, 0.15);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* macOS Window Titlebar */
+    .term-titlebar {
+      height: 38px;
+      background: var(--term-header-bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      user-select: none;
+    }
+
+    .term-traffic-lights {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .traffic-light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .traffic-light:hover { opacity: 0.8; }
+    .traffic-light.close { background: #FF5F56; border: 1px solid #E0443E; }
+    .traffic-light.minimize { background: #FFBD2E; border: 1px solid #DEA123; }
+    .traffic-light.fullscreen { background: #27C93F; border: 1px solid #1AAB29; }
+
+    .term-window-title {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: #9CA3AF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .term-branch-badge {
+      background: rgba(121, 30, 255, 0.2);
+      color: var(--cf-brand-soft);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+    }
+
+    .term-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      max-width: 60%;
+      scrollbar-width: none;
+    }
+    .term-top-actions::-webkit-scrollbar {
+      display: none;
+    }
+
+    .term-action-chip {
+      padding: 3px 8px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: #D1D5DB;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .term-action-chip:hover {
+      background: var(--cf-brand);
+      color: #fff;
+      border-color: var(--cf-brand-glow);
+    }
+
+    /* Terminal Screen / Buffer */
+    .term-viewport {
+      flex: 1;
+      padding: 16px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      line-height: 1.6;
+      color: var(--term-fg);
+      overflow-y: auto;
+      cursor: text;
+      position: relative;
+    }
+
+    .term-viewport::-webkit-scrollbar {
+      width: 6px;
+    }
+    .term-viewport::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .term-viewport::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+
+    .term-output-line {
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Active Interactive Prompt Line */
+    .term-prompt-line {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .term-ps1-user {
+      color: var(--term-green);
+      font-weight: 600;
+    }
+
+    .term-ps1-at {
+      color: var(--term-dim);
+    }
+
+    .term-ps1-host {
+      color: var(--term-blue);
+      font-weight: 600;
+    }
+
+    .term-ps1-path {
+      color: var(--term-purple);
+      font-weight: 600;
+      margin: 0 4px;
+    }
+
+    .term-ps1-branch {
+      color: var(--term-yellow);
+      font-size: 0.8rem;
+      margin-right: 6px;
+    }
+
+    .term-ps1-char {
+      color: var(--cf-cyan);
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    .term-cmd-text {
+      color: #fff;
+      font-weight: 600;
+      white-space: pre;
+    }
+
+    /* Blinking Block Cursor */
+    .term-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--term-cursor);
+      vertical-align: middle;
+      margin-left: 1px;
+      animation: termBlink 1s step-end infinite;
+      box-shadow: 0 0 8px var(--cf-cyan-glow);
+    }
+
+    @keyframes termBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Hidden input to capture keystrokes naturally */
+    .term-hidden-input {
+      position: absolute;
+      opacity: 0;
+      left: -9999px;
+      top: -9999px;
+      pointer-events: none;
+    }
+
+    /* Terminal Status Bar Footer */
+    .term-statusbar {
+      height: 26px;
+      background: #0E0E18;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #6B7280;
+    }
+
+    .term-status-left, .term-status-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .term-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--term-green);
+    }
+
+    /* Syntax highlight classes inside terminal */
+    .ansi-green { color: var(--term-green); font-weight: 600; }
+    .ansi-cyan { color: var(--cf-cyan); }
+    .ansi-blue { color: var(--term-blue); }
+    .ansi-yellow { color: var(--term-yellow); }
+    .ansi-pink { color: var(--term-pink); font-weight: 600; }
+    .ansi-purple { color: var(--term-purple); }
+    .ansi-red { color: var(--cf-rose); font-weight: 600; }
+    .ansi-dim { color: var(--term-dim); }
+    .ansi-bold { font-weight: 700; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER TOOLBAR -->
+  <header class="studio-header">
+    <div class="header-left">
+      <a href="/" class="brand-link" title="Return to Documentation">
+        <img src="/logo-mark.png" alt="CRUDForge" class="brand-logo">
+        <div class="brand-title">CRUD<span>Forge</span></div>
+      </a>
+      <span class="studio-badge">Studio</span>
+
+      <!-- Mode Switcher Tabs -->
+      <nav class="mode-tabs">
+        <button class="mode-tab" data-mode="schema">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Schema Studio
+        </button>
+        <button class="mode-tab active" data-mode="config">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Terminal Studio
+        </button>
+      </nav>
+    </div>
+
+    <div class="header-center">
+      <!-- Template Selector (Schema Mode) -->
+      <div class="selector-wrap" id="schemaTemplateControls" style="display: none;">
+        <span class="selector-label">Template</span>
+        <select class="studio-select" id="templateSelect">
+          <option value="hr">HR & Employees (Classic JDL)</option>
+          <option value="library">Library & Books (GDL)</option>
+          <option value="ecommerce">E-Commerce & Orders</option>
+          <option value="pmb">PMB Province & Region</option>
+          <option value="minimal">Minimal Starter</option>
+        </select>
+      </div>
+
+      <!-- Preset Selector (Config Mode) -->
+      <div class="selector-wrap" id="configPresetControls" style="display: flex;">
+        <span class="selector-label">Preset</span>
+        <select class="studio-select" id="configPresetSelect">
+          <option value="default">Default Clean Starter (SPA)</option>
+          <option value="keycloak">Keycloak Enterprise + IAM</option>
+          <option value="ssr">SSR Node Universal</option>
+          <option value="pmb">PMB Test Sandbox</option>
+        </select>
+      </div>
+
+      <!-- Format Toggle (GDL / JDL) -->
+      <div class="format-pills" id="formatPills" style="display: none;">
+        <button class="format-pill active" data-format="jdl">JDL</button>
+        <button class="format-pill" data-format="gdl">GDL</button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="action-btn" id="formatCodeBtn" title="Format & Beautify Code" style="display: none;">
+        <span>🪄 Format</span>
+      </button>
+      <button class="action-btn" id="downloadSchemaBtn" title="Download Schema File" style="display: none;">
+        <span>📥 Download</span>
+      </button>
+      <button class="action-btn" id="exportSvgBtn" title="Export ERD as SVG Diagram" style="display: none;">
+        <span>🖼️ Export ERD</span>
+      </button>
+      <button class="action-btn action-btn--primary" id="copyCliBtn" title="Copy CLI generate command">
+        <span>📋 Copy Command</span>
+      </button>
+      <a href="/guides/studio/" class="action-btn" title="View Studio Guide">
+        <span>📖 Guide</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="studio-main">
+    
+    <!-- VIEW 1: SCHEMA STUDIO (JDL / GDL Visualizer & ERD Graph) -->
+    <div class="studio-view" id="schemaStudioView">
+      <div class="split-pane">
+        
+        <!-- Left Pane: Code Editor -->
+        <div class="pane-left" id="editorPane">
+          <div class="editor-subheader">
+            <div class="editor-stats">
+              <div class="editor-stat-item">Entities: <span class="editor-stat-val" id="statEntities">0</span></div>
+              <div class="editor-stat-item">Enums: <span class="editor-stat-val" id="statEnums">0</span></div>
+              <div class="editor-stat-item">Relations: <span class="editor-stat-val" id="statRelations">0</span></div>
+            </div>
+            <div class="editor-stat-item" id="editorLineCount">Line: 1, Col: 1</div>
+          </div>
+
+          <!-- Snippet Shortcut Bar -->
+          <div class="snippet-bar">
+            <button class="snippet-btn" id="snipEntityBtn">+ Entity</button>
+            <button class="snippet-btn" id="snipEnumBtn">+ Enum</button>
+            <button class="snippet-btn" id="snipRelBtn">+ Relation</button>
+            <button class="snippet-btn" id="snipAuditBtn">+ Audit Fields</button>
+          </div>
+
+          <div class="editor-container">
+            <div class="gutter-lines" id="editorGutter">1</div>
+            <textarea class="editor-textarea" id="schemaEditor" spellcheck="false" placeholder="Write JDL or GDL schema here..."></textarea>
+          </div>
+
+          <div class="validation-banner" id="validationBanner">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span id="validationText">Schema parsed successfully. Live ERD ready.</span>
+          </div>
+        </div>
+
+        <!-- Draggable Resizer Bar -->
+        <div class="pane-divider" id="paneDivider"></div>
+
+        <!-- Right Pane: Live Visual ERD Diagram -->
+        <div class="pane-right" id="diagramPane">
+          <div class="diagram-toolbar">
+            <div class="diagram-tool-group">
+              <button class="tool-btn" id="zoomInBtn" title="Zoom In">+</button>
+              <button class="tool-btn" id="zoomOutBtn" title="Zoom Out">-</button>
+              <span class="zoom-level-text" id="zoomLevelText">100%</span>
+              <button class="tool-btn" id="zoomResetBtn" title="Reset View">⊡</button>
+            </div>
+
+            <div class="diagram-tool-group">
+              <button class="action-btn" id="autoLayoutBtn" style="padding: 4px 8px; font-size: 0.72rem;">
+                ⚡ Auto-Layout
+              </button>
+            </div>
+          </div>
+
+          <div class="diagram-canvas-viewport" id="canvasViewport">
+            <div class="diagram-world" id="diagramWorld">
+              <svg class="relationship-svg" id="relationshipSvg">
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#9B5CFF" />
+                  </marker>
+                </defs>
+              </svg>
+              <div id="nodesContainer"></div>
+            </div>
+          </div>
+
+          <div class="canvas-legend">
+            <div class="legend-item"><span class="legend-dot" style="background: #9B5CFF;"></span> Entity</div>
+            <div class="legend-item"><span class="legend-dot" style="background: #22D3EE;"></span> Enum</div>
+            <div class="legend-item"><span class="legend-dot" style="background: #10B981;"></span> (1..*) Relation</div>
+            <div class="legend-item"><span>💡 Drag boxes to reposition • Scroll to zoom</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: 100% REAL TERMINAL CLONE & CONFIG INSPECTOR -->
+    <div class="studio-view active" id="configStudioView">
+      <div class="config-studio-grid layout-split" id="configStudioGrid">
+        
+        <!-- Left: Config & Live YAML Studio Wrapper -->
+        <div class="config-sidebar-wrapper" id="configSidebarWrapper">
+          
+          <!-- View Switcher Bar -->
+          <div class="config-view-tabs-bar">
+            <div class="config-view-tabs">
+              <button class="config-view-tab active" id="tabConfigSplit" data-view="split" title="Side-by-side GUI controls and live YAML">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                Split View
+              </button>
+              <button class="config-view-tab" id="tabConfigYaml" data-view="yaml" title="Full crudforge.config.yml code editor">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                crudforge.config.yml
+              </button>
+              <button class="config-view-tab" id="tabConfigGui" data-view="gui" title="Visual Builder controls only">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                Visual Controls
+              </button>
+            </div>
+
+            <div class="config-pane-actions">
+              <button class="config-mini-btn" id="copyConfigYamlBtn" title="Copy YAML to clipboard">
+                <span>📋 Copy YAML</span>
+              </button>
+              <button class="config-mini-btn" id="downloadConfigYamlBtn" title="Download crudforge.config.yml">
+                <span>📥 .yml</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Content Body (Holds GUI Controls + Live YAML Editor) -->
+          <div class="config-content-body view-split" id="configContentBody">
+            
+            <!-- Left Sub-Pane: Visual Form Controls -->
+            <aside class="config-controls-panel" id="configControlsPanel">
+              
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>📦</span> Input & Output Setup
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Schema File Path</label>
+                  <input type="text" class="form-input" id="cfgInputFile" value="./gdl/example.gdl">
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Schema Format</label>
+                  <select class="form-select" id="cfgInputType">
+                    <option value="gdl">GDL (CRUDForge native)</option>
+                    <option value="jdl">JDL (JHipster compatible)</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Overwrite Conflict Policy</label>
+                  <select class="form-select" id="cfgOverwritePolicy">
+                    <option value="fail">fail (Safest — abort on diff)</option>
+                    <option value="merge">merge (Preserve // cforge- zones)</option>
+                    <option value="ask">ask (Interactive resolution)</option>
+                    <option value="overwrite">overwrite (Replace generated files)</option>
+                    <option value="skip">skip (Keep existing files)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>🚀</span> Fuse Shell & Rendering
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Fuse Angular Starter</span>
+                    <span class="toggle-desc">Scaffold admin dashboard layout</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgFuseEnabled" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Rendering Mode</label>
+                  <select class="form-select" id="cfgRendering">
+                    <option value="spa">SPA (Client-side single page app)</option>
+                    <option value="ssr">SSR (Node Universal server rendering)</option>
+                  </select>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Clean Layout</span>
+                    <span class="toggle-desc">Strip Fuse demo apps & promo banners</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgCleanLayout" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Primary Brand Theme Color</label>
+                  <input type="text" class="form-input" id="cfgThemePrimary" value="#791EFF">
+                </div>
+              </div>
+
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>🖥️</span> UI & Form Modes
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Form Mode (New & Edit)</label>
+                  <select class="form-select" id="cfgFormMode">
+                    <option value="sidebar">sidebar (Drawer on list page)</option>
+                    <option value="page">page (Dedicated route pages)</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Search Strategy</label>
+                  <select class="form-select" id="cfgSearchMode">
+                    <option value="field">field (field.contains API)</option>
+                    <option value="global">global (Full-text query API)</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Responsive Card Switch (px)</label>
+                  <input type="number" class="form-input" id="cfgCardBreakpoint" value="640">
+                </div>
+              </div>
+
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>🔐</span> Keycloak Auth & IAM
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Auth Provider</label>
+                  <select class="form-select" id="cfgAuthProvider">
+                    <option value="none">none (Public / No Auth)</option>
+                    <option value="keycloak">keycloak (OIDC + Admin Service)</option>
+                  </select>
+                </div>
+                <div id="keycloakFields" style="display: none;">
+                  <div class="form-row">
+                    <label class="form-label">Keycloak Gateway / Base URL</label>
+                    <input type="text" class="form-input" id="cfgServerUrl" value="http://62.84.188.166:31740">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Realm</label>
+                    <input type="text" class="form-input" id="cfgRealm" value="CRUD-FORDGE">
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-label-group">
+                      <span class="toggle-title">IAM Overlay Module</span>
+                      <span class="toggle-desc">User Management & screen ACL matrices</span>
+                    </div>
+                    <label class="cf-switch">
+                      <input type="checkbox" id="cfgIamEnabled" checked>
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </aside>
+
+            <!-- Right Sub-Pane: Live YAML Code Editor -->
+            <section class="config-yaml-panel" id="configYamlPanel">
+              <div class="yaml-editor-toolbar">
+                <div class="yaml-status-tag">
+                  <span class="status-pulse"></span>
+                  <span>Live Synced YAML</span>
+                </div>
+                <div class="yaml-stats" id="yamlLineCount">32 lines</div>
+              </div>
+              <div class="yaml-editor-container">
+                <div class="gutter-lines" id="yamlGutter">1</div>
+                <textarea class="yaml-textarea" id="configYamlEditor" spellcheck="false" placeholder="# crudforge.config.yml contents..."></textarea>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
+        <!-- Right: 100% REAL TERMINAL CLONE -->
+        <main class="real-terminal-wrapper">
+          <div class="terminal-window" id="terminalWindow">
+            
+            <!-- Window Titlebar -->
+            <div class="term-titlebar">
+              <div class="term-traffic-lights">
+                <div class="traffic-light close" id="termLightClose" title="Clear screen"></div>
+                <div class="traffic-light minimize" id="termLightMinimize" title="Minimize"></div>
+                <div class="traffic-light fullscreen" id="termLightFullscreen" title="Toggle Fullscreen"></div>
+              </div>
+
+              <div class="term-window-title">
+                <span>crudforge@macbook: ~/work/my-app</span>
+                <span class="term-branch-badge">git:(main)</span>
+              </div>
+
+              <div class="term-top-actions">
+                <button class="term-action-chip" id="chipCatConfig">cat config.yml</button>
+                <button class="term-action-chip" id="chipBanner">banner</button>
+                <button class="term-action-chip" id="chipInit">init</button>
+                <button class="term-action-chip" id="chipGenerate">generate</button>
+                <button class="term-action-chip" id="chipValidate">validate</button>
+                <button class="term-action-chip" id="chipDev">npm run dev</button>
+                <button class="term-action-chip" id="chipTree">tree</button>
+                <button class="term-action-chip" id="chipClear">clear</button>
+              </div>
+            </div>
+
+            <!-- Terminal Screen Buffer -->
+            <div class="term-viewport" id="termViewport">
+              <div id="termOutputContainer"></div>
+              
+              <!-- Active Command Line -->
+              <div class="term-prompt-line" id="termPromptLine">
+                <span class="term-ps1-user">crudforge</span>
+                <span class="term-ps1-at">@</span>
+                <span class="term-ps1-host">macbook</span>
+                <span class="term-ps1-path">~/work/my-app</span>
+                <span class="term-ps1-branch">(main)</span>
+                <span class="term-ps1-char">$</span>
+                <span class="term-cmd-text" id="termCurrentInputText"></span>
+                <span class="term-cursor" id="termCaret"></span>
+              </div>
+            </div>
+
+            <!-- Real Native Input (hidden, captures keyboard focus everywhere) -->
+            <input type="text" class="term-hidden-input" id="termNativeInput" autofocus autocomplete="off" spellcheck="false">
+
+            <!-- Terminal Statusbar Footer -->
+            <div class="term-statusbar">
+              <div class="term-status-left">
+                <div class="term-status-pill"><span class="status-dot"></span> CRUDForge CLI v1.0.0</div>
+                <div>Node v24.1.0</div>
+                <div>zsh 5.9 (x86_64-apple-darwin23.0)</div>
+              </div>
+              <div class="term-status-right">
+                <div>UTF-8</div>
+                <div>Type <span class="ansi-yellow">help</span> for commands</div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+      </div>
+    </div>
+
+  </main>
+
+  <script is:inline>
+    // =========================================================================
+    // TEMPLATES DATA
+    // =========================================================================
+    const TEMPLATES = {
+      hr: {
+        jdl: `/**
+ * HR & Employee Management (Classic JDL)
+ */
+entity Region {
+  regionName String
+}
+
+entity Country {
+  countryName String
+}
+
+entity Location {
+  streetAddress String
+  postalCode String
+  city String
+  stateProvince String
+}
+
+entity Department {
+  departmentName String required
+}
+
+entity Task {
+  title String
+  description String
+}
+
+entity Employee {
+  firstName String
+  lastName String
+  email String
+  phoneNumber String
+  hireDate Instant
+  salary Long
+  commissionPct Long
+}
+
+entity Job {
+  jobTitle String
+  minSalary Long
+  maxSalary Long
+}
+
+entity JobHistory {
+  startDate Instant
+  endDate Instant
+  language Language
+}
+
+enum Language {
+  FRENCH, ENGLISH, SPANISH
+}
+
+relationship OneToOne {
+  Country{region} to Region
+  Location{country} to Country
+  Department{location} to Location
+}
+
+relationship OneToMany {
+  Department{employee} to Employee
+  Employee{job} to Job
+  Job{task} to Task
+}
+
+relationship ManyToOne {
+  JobHistory{job} to Job
+  JobHistory{department} to Department
+  JobHistory{employee} to Employee
+}`,
+        gdl: `entity Region {
+  string regionName
+}
+
+entity Country {
+  string countryName
+}
+
+entity Location {
+  string streetAddress
+  string postalCode
+  string city
+  string stateProvince
+}
+
+entity Department {
+  string departmentName required
+}
+
+entity Task {
+  string title
+  string description
+}
+
+entity Employee {
+  string firstName
+  string lastName
+  string email
+  string phoneNumber
+  instant hireDate
+  long salary
+  long commissionPct
+}
+
+entity Job {
+  string jobTitle
+  long minSalary
+  long maxSalary
+}
+
+entity JobHistory {
+  instant startDate
+  instant endDate
+  Language language
+}
+
+enum Language {
+  FRENCH, ENGLISH, SPANISH
+}
+
+relationship OneToMany {
+  Department{employee} to Employee
+  Employee{job} to Job
+}`
+      },
+      library: {
+        jdl: `entity Book {
+  title String required
+  isbn String
+  price BigDecimal
+  publishDate LocalDate
+}
+
+entity Author {
+  name String required
+  biography TextBlob
+}
+
+entity Publisher {
+  companyName String required
+  website String
+}
+
+relationship ManyToOne {
+  Book{author} to Author
+  Book{publisher} to Publisher
+}`,
+        gdl: `entity Book {
+  string title required
+  string isbn
+  bigDecimal price
+  localDate publishDate
+}
+
+entity Author {
+  string name required
+  textBlob biography
+}
+
+entity Publisher {
+  string companyName required
+  string website
+}
+
+relationship ManyToOne {
+  Book{author} to Author
+  Book{publisher} to Publisher
+}`
+      },
+      ecommerce: {
+        jdl: `entity Customer {
+  fullName String required
+  email String required
+  phone String
+}
+
+entity Order {
+  orderNumber String required
+  orderDate Instant
+  totalAmount BigDecimal
+  status OrderStatus
+}
+
+entity OrderItem {
+  quantity Integer required
+  unitPrice BigDecimal required
+}
+
+entity Product {
+  productName String required
+  sku String
+  stockQuantity Integer
+}
+
+enum OrderStatus {
+  PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+}
+
+relationship OneToMany {
+  Customer{order} to Order
+  Order{orderItem} to OrderItem
+}
+
+relationship ManyToOne {
+  OrderItem{product} to Product
+}`,
+        gdl: `entity Customer {
+  string fullName required
+  string email required
+  string phone
+}
+
+entity Order {
+  string orderNumber required
+  instant orderDate
+  bigDecimal totalAmount
+  OrderStatus status
+}
+
+entity OrderItem {
+  integer quantity required
+  bigDecimal unitPrice required
+}
+
+entity Product {
+  string productName required
+  string sku
+  integer stockQuantity
+}
+
+enum OrderStatus {
+  PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+}
+
+relationship OneToMany {
+  Customer{order} to Order
+  Order{orderItem} to OrderItem
+}
+
+relationship ManyToOne {
+  OrderItem{product} to Product
+}`
+      },
+      pmb: {
+        jdl: `entity Province {
+  provinceCode String required
+  provinceName String required
+  index Integer
+}
+
+entity District {
+  districtCode String required
+  districtName String required
+}
+
+relationship OneToMany {
+  Province{district} to District
+}`,
+        gdl: `entity Province {
+  string provinceCode required
+  string provinceName required
+  integer index
+}
+
+entity District {
+  string districtCode required
+  string districtName required
+}
+
+relationship OneToMany {
+  Province{district} to District
+}`
+      },
+      minimal: {
+        jdl: `entity Item {
+  title String required
+  description String
+  active Boolean
+}`,
+        gdl: `entity Item {
+  string title required
+  string description
+  boolean active
+}`
+      }
+    };
+
+    // =========================================================================
+    // GLOBAL STATE
+    // =========================================================================
+    let currentMode = 'config';
+    let currentFormat = 'jdl';
+    let currentTemplate = 'hr';
+    let zoomLevel = 1.0;
+    let panX = 40;
+    let panY = 40;
+    let isPanning = false;
+    let startX = 0;
+    let startY = 0;
+    let activeDragNode = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    const schemaEditor = document.getElementById('schemaEditor');
+    const editorGutter = document.getElementById('editorGutter');
+    const nodesContainer = document.getElementById('nodesContainer');
+    const relationshipSvg = document.getElementById('relationshipSvg');
+    const canvasViewport = document.getElementById('canvasViewport');
+    const diagramWorld = document.getElementById('diagramWorld');
+    const validationBanner = document.getElementById('validationBanner');
+    const validationText = document.getElementById('validationText');
+    const statEntities = document.getElementById('statEntities');
+    const statEnums = document.getElementById('statEnums');
+    const statRelations = document.getElementById('statRelations');
+    const zoomLevelText = document.getElementById('zoomLevelText');
+
+    let nodePositions = {};
+
+    // =========================================================================
+    // SCHEMA PARSER & DIAGRAM
+    // =========================================================================
+    function parseSchema(text) {
+      const entities = [];
+      const enums = [];
+      const relationships = [];
+
+      const clean = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+
+      // Parse Enums
+      const enumRegex = /enum\s+([A-Za-z0-9_]+)\s*\{([^}]*)\}/g;
+      let match;
+      while ((match = enumRegex.exec(clean)) !== null) {
+        const name = match[1];
+        const rawVals = match[2].split(',').map(v => v.trim()).filter(Boolean);
+        enums.push({ name, values: rawVals });
+      }
+
+      // Parse Entities
+      const entityRegex = /entity\s+([A-Za-z0-9_]+)(?:\s*\([^)]*\))?\s*\{([^}]*)\}/g;
+      while ((match = entityRegex.exec(clean)) !== null) {
+        const name = match[1];
+        const body = match[2];
+        const fields = [];
+        const lines = body.split('\n').map(l => l.trim()).filter(Boolean);
+
+        for (const line of lines) {
+          const tokens = line.split(/\s+/).filter(Boolean);
+          if (tokens.length >= 2) {
+            let fieldName, fieldType;
+            if (currentFormat === 'gdl') {
+              fieldType = tokens[0];
+              fieldName = tokens[1];
+            } else {
+              fieldName = tokens[0];
+              fieldType = tokens[1];
+            }
+            const required = line.toLowerCase().includes('required');
+            fields.push({ name: fieldName, type: fieldType, required });
+          }
+        }
+        entities.push({ name, fields });
+      }
+
+      // Parse Relationships (brace-aware: Country{region} to Region)
+      const relHeaderRegex = /relationship\s+(OneToOne|OneToMany|ManyToOne|ManyToMany)\s*\{/g;
+      while ((match = relHeaderRegex.exec(clean)) !== null) {
+        const type = match[1];
+        let depth = 1;
+        let i = relHeaderRegex.lastIndex;
+        let body = '';
+        while (i < clean.length && depth > 0) {
+          const ch = clean[i];
+          if (ch === '{') depth++;
+          else if (ch === '}') {
+            depth--;
+            if (depth === 0) break;
+          }
+          if (depth > 0) body += ch;
+          i++;
+        }
+        relHeaderRegex.lastIndex = i + 1;
+
+        const relLines = body.split(/[\n;]+/).map(l => l.trim()).filter(Boolean);
+        for (const line of relLines) {
+          const relMatch = /([A-Za-z0-9_]+)(?:\{([^}]*)\})?\s+to\s+([A-Za-z0-9_]+)(?:\{([^}]*)\})?/.exec(line);
+          if (relMatch) {
+            relationships.push({
+              type,
+              from: relMatch[1],
+              fromField: relMatch[2] || '',
+              to: relMatch[3],
+              toField: relMatch[4] || ''
+            });
+          }
+        }
+      }
+
+      return { entities, enums, relationships };
+    }
+
+    function renderDiagram(parsed) {
+      statEntities.textContent = parsed.entities.length;
+      statEnums.textContent = parsed.enums.length;
+      statRelations.textContent = parsed.relationships.length;
+
+      if (parsed.entities.length === 0 && parsed.enums.length === 0) {
+        validationBanner.className = 'validation-banner has-error';
+        validationText.textContent = 'No entities or enums found in schema.';
+      } else {
+        validationBanner.className = 'validation-banner';
+        validationText.textContent = `Valid schema: ${parsed.entities.length} entities, ${parsed.enums.length} enums, ${parsed.relationships.length} relations.`;
+      }
+
+      nodesContainer.innerHTML = '';
+
+      const totalItems = [...parsed.entities, ...parsed.enums];
+      const cols = Math.max(2, Math.min(3, Math.ceil(Math.sqrt(totalItems.length))));
+      const colWidth = 280;
+      const rowHeights = [];
+
+      // Pre-estimate row heights from field counts so tall tables don't overlap
+      totalItems.forEach((item, i) => {
+        const row = Math.floor(i / cols);
+        const fieldCount = item.fields ? item.fields.length : (item.values ? item.values.length : 0);
+        const estH = 44 + Math.max(1, fieldCount) * 22 + 16;
+        rowHeights[row] = Math.max(rowHeights[row] || 0, estH);
+      });
+
+      const rowTops = [];
+      let accY = 48;
+      for (let r = 0; r < rowHeights.length; r++) {
+        rowTops[r] = accY;
+        accY += rowHeights[r] + 48;
+      }
+
+      let idx = 0;
+      // Carry Astro scoped class onto JS-created nodes (if styles are scoped)
+      const astroScope = [...(nodesContainer.classList || [])].find((c) => c.startsWith('astro-')) || '';
+
+      function placeNode(name) {
+        if (!nodePositions[name]) {
+          const row = Math.floor(idx / cols);
+          const col = idx % cols;
+          nodePositions[name] = {
+            x: 48 + col * colWidth,
+            y: rowTops[row] ?? (48 + row * 200)
+          };
+        }
+        idx++;
+        return nodePositions[name];
+      }
+
+      parsed.entities.forEach(ent => {
+        const pos = placeNode(ent.name);
+
+        const node = document.createElement('div');
+        node.className = ['diagram-node', astroScope].filter(Boolean).join(' ');
+        node.id = `node-${ent.name}`;
+        node.dataset.name = ent.name;
+        node.style.left = `${pos.x}px`;
+        node.style.top = `${pos.y}px`;
+        node.style.position = 'absolute';
+
+        let fieldsHtml = '';
+        ent.fields.forEach(f => {
+          fieldsHtml += `
+            <div class="node-field-row">
+              <span class="field-name ${f.required ? 'required' : ''}">${f.name}</span>
+              <span class="field-type">${f.type}</span>
+            </div>
+          `;
+        });
+
+        node.innerHTML = `
+          <div class="node-header ${astroScope}">
+            <span class="${astroScope}">${ent.name}</span>
+            <span class="node-stereotype ${astroScope}">&lt;&lt;entity&gt;&gt;</span>
+          </div>
+          <div class="node-fields ${astroScope}">
+            ${fieldsHtml || '<div style="color: #6B7280; font-size: 0.7rem;">(no fields)</div>'}
+          </div>
+        `;
+        // Stamp scope class on nested field rows created via innerHTML
+        if (astroScope) node.querySelectorAll('*').forEach((el) => el.classList.add(astroScope));
+
+        node.addEventListener('mousedown', (e) => onNodeMouseDown(e, ent.name));
+        nodesContainer.appendChild(node);
+      });
+
+      parsed.enums.forEach(en => {
+        const pos = placeNode(en.name);
+
+        const node = document.createElement('div');
+        node.className = ['diagram-node', 'is-enum', astroScope].filter(Boolean).join(' ');
+        node.id = `node-${en.name}`;
+        node.dataset.name = en.name;
+        node.style.left = `${pos.x}px`;
+        node.style.top = `${pos.y}px`;
+        node.style.position = 'absolute';
+
+        let valsHtml = '';
+        en.values.forEach(v => {
+          valsHtml += `<div class="enum-val">• ${v}</div>`;
+        });
+
+        node.innerHTML = `
+          <div class="node-header ${astroScope}">
+            <span class="${astroScope}">${en.name}</span>
+            <span class="node-stereotype ${astroScope}">&lt;&lt;enum&gt;&gt;</span>
+          </div>
+          <div class="node-fields ${astroScope}">
+            ${valsHtml}
+          </div>
+        `;
+        if (astroScope) node.querySelectorAll('*').forEach((el) => el.classList.add(astroScope));
+
+        node.addEventListener('mousedown', (e) => onNodeMouseDown(e, en.name));
+        nodesContainer.appendChild(node);
+      });
+
+      // Second pass: draw lines after layout so offsetWidth/Height are accurate
+      requestAnimationFrame(() => drawRelationships(parsed.relationships));
+    }
+
+    function drawRelationships(relationships) {
+      while (relationshipSvg.childNodes.length > 1) {
+        relationshipSvg.removeChild(relationshipSvg.lastChild);
+      }
+
+      relationships.forEach((rel) => {
+        const fromEl = document.getElementById(`node-${rel.from}`);
+        const toEl = document.getElementById(`node-${rel.to}`);
+
+        if (!fromEl || !toEl) return;
+
+        const fromPos = nodePositions[rel.from];
+        const toPos = nodePositions[rel.to];
+        if (!fromPos || !toPos) return;
+
+        const fromWidth = fromEl.offsetWidth || 200;
+        const fromHeight = fromEl.offsetHeight || 120;
+        const toWidth = toEl.offsetWidth || 200;
+        const toHeight = toEl.offsetHeight || 120;
+
+        const startX = fromPos.x + fromWidth / 2;
+        const startY = fromPos.y + fromHeight / 2;
+        const endX = toPos.x + toWidth / 2;
+        const endY = toPos.y + toHeight / 2;
+
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const ctrlX1 = startX + dx * 0.4;
+        const ctrlY1 = startY;
+        const ctrlX2 = startX + dx * 0.6;
+        const ctrlY2 = endY;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${startX} ${startY} C ${ctrlX1} ${ctrlY1}, ${ctrlX2} ${ctrlY2}, ${endX} ${endY}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#9B5CFF');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('stroke-dasharray', rel.type === 'ManyToMany' ? '4 4' : 'none');
+        path.setAttribute('marker-end', 'url(#arrow)');
+        path.setAttribute('opacity', '0.85');
+        relationshipSvg.appendChild(path);
+
+        const midX = (startX + endX) / 2;
+        const midY = (startY + endY) / 2;
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', midX);
+        text.setAttribute('y', midY - 6);
+        text.setAttribute('fill', '#22D3EE');
+        text.setAttribute('font-size', '10');
+        text.setAttribute('font-family', 'ui-monospace, monospace');
+        text.setAttribute('text-anchor', 'middle');
+        text.textContent = rel.type === 'OneToMany' ? '(1..*)' : (rel.type === 'ManyToOne' ? '(*..1)' : (rel.type === 'ManyToMany' ? '(*..*)' : '(1..1)'));
+        relationshipSvg.appendChild(text);
+      });
+    }
+
+    // =========================================================================
+    // CANVAS TRANSFORMS
+    // =========================================================================
+    function updateCanvasTransform() {
+      diagramWorld.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+      zoomLevelText.textContent = `${Math.round(zoomLevel * 100)}%`;
+    }
+
+    canvasViewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+      const newZoom = Math.min(Math.max(0.3, zoomLevel * zoomFactor), 2.5);
+      
+      const rect = canvasViewport.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      panX = mouseX - (mouseX - panX) * (newZoom / zoomLevel);
+      panY = mouseY - (mouseY - panY) * (newZoom / zoomLevel);
+      zoomLevel = newZoom;
+
+      updateCanvasTransform();
+    });
+
+    canvasViewport.addEventListener('mousedown', (e) => {
+      if (e.target === canvasViewport || e.target === relationshipSvg || e.target === diagramWorld) {
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isPanning) {
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        updateCanvasTransform();
+      } else if (activeDragNode) {
+        const x = (e.clientX - panX) / zoomLevel - dragOffsetX;
+        const y = (e.clientY - panY) / zoomLevel - dragOffsetY;
+        nodePositions[activeDragNode] = { x, y };
+
+        const nodeEl = document.getElementById(`node-${activeDragNode}`);
+        if (nodeEl) {
+          nodeEl.style.left = `${x}px`;
+          nodeEl.style.top = `${y}px`;
+        }
+
+        const parsed = parseSchema(schemaEditor.value);
+        drawRelationships(parsed.relationships);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      activeDragNode = null;
+    });
+
+    function onNodeMouseDown(e, nodeName) {
+      e.stopPropagation();
+      activeDragNode = nodeName;
+      const pos = nodePositions[nodeName] || { x: 0, y: 0 };
+      dragOffsetX = (e.clientX - panX) / zoomLevel - pos.x;
+      dragOffsetY = (e.clientY - panY) / zoomLevel - pos.y;
+    }
+
+    document.getElementById('zoomInBtn').addEventListener('click', () => {
+      zoomLevel = Math.min(2.5, zoomLevel * 1.2);
+      updateCanvasTransform();
+    });
+
+    document.getElementById('zoomOutBtn').addEventListener('click', () => {
+      zoomLevel = Math.max(0.3, zoomLevel / 1.2);
+      updateCanvasTransform();
+    });
+
+    document.getElementById('zoomResetBtn').addEventListener('click', () => {
+      zoomLevel = 1.0;
+      panX = 40;
+      panY = 40;
+      updateCanvasTransform();
+    });
+
+    document.getElementById('autoLayoutBtn').addEventListener('click', () => {
+      nodePositions = {};
+      const parsed = parseSchema(schemaEditor.value);
+      renderDiagram(parsed);
+      zoomLevel = 1.0;
+      panX = 40;
+      panY = 40;
+      updateCanvasTransform();
+    });
+
+    // =========================================================================
+    // GUTTER & SNIPPETS
+    // =========================================================================
+    function updateGutter() {
+      const lines = schemaEditor.value.split('\n').length;
+      let gutterHtml = '';
+      for (let i = 1; i <= lines; i++) {
+        gutterHtml += `${i}<br>`;
+      }
+      editorGutter.innerHTML = gutterHtml;
+    }
+
+    schemaEditor.addEventListener('input', () => {
+      updateGutter();
+      const parsed = parseSchema(schemaEditor.value);
+      renderDiagram(parsed);
+    });
+
+    schemaEditor.addEventListener('scroll', () => {
+      editorGutter.scrollTop = schemaEditor.scrollTop;
+    });
+
+    schemaEditor.addEventListener('keyup', updateCursorPos);
+    schemaEditor.addEventListener('click', updateCursorPos);
+
+    function updateCursorPos() {
+      const text = schemaEditor.value.substring(0, schemaEditor.selectionStart);
+      const lines = text.split('\n');
+      const line = lines.length;
+      const col = lines[lines.length - 1].length + 1;
+      document.getElementById('editorLineCount').textContent = `Line: ${line}, Col: ${col}`;
+    }
+
+    document.getElementById('snipEntityBtn').addEventListener('click', () => {
+      const snip = currentFormat === 'gdl' 
+        ? `\nentity NewEntity {\n  string name required\n  bigDecimal amount\n}\n`
+        : `\nentity NewEntity {\n  name String required\n  amount BigDecimal\n}\n`;
+      schemaEditor.value += snip;
+      updateGutter();
+      renderDiagram(parseSchema(schemaEditor.value));
+    });
+
+    document.getElementById('snipEnumBtn').addEventListener('click', () => {
+      schemaEditor.value += `\nenum StatusType {\n  ACTIVE, INACTIVE, ARCHIVED\n}\n`;
+      updateGutter();
+      renderDiagram(parseSchema(schemaEditor.value));
+    });
+
+    document.getElementById('snipRelBtn').addEventListener('click', () => {
+      schemaEditor.value += `\nrelationship OneToMany {\n  SourceEntity{target} to TargetEntity\n}\n`;
+      updateGutter();
+      renderDiagram(parseSchema(schemaEditor.value));
+    });
+
+    document.getElementById('snipAuditBtn').addEventListener('click', () => {
+      const auditSnip = currentFormat === 'gdl'
+        ? `  string createdBy\n  instant createdDate\n  string lastModifiedBy\n  instant lastModifiedDate\n`
+        : `  createdBy String\n  createdDate Instant\n  lastModifiedBy String\n  lastModifiedDate Instant\n`;
+      schemaEditor.value += `\n// Audit attributes\n${auditSnip}`;
+      updateGutter();
+      renderDiagram(parseSchema(schemaEditor.value));
+    });
+
+    // Split Pane Divider
+    const paneDivider = document.getElementById('paneDivider');
+    const editorPane = document.getElementById('editorPane');
+    let isResizing = false;
+
+    paneDivider.addEventListener('mousedown', () => {
+      isResizing = true;
+      paneDivider.classList.add('dragging');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isResizing) return;
+      const containerWidth = window.innerWidth;
+      const newWidth = Math.min(Math.max(300, e.clientX), containerWidth - 300);
+      editorPane.style.width = `${newWidth}px`;
+      paneDivider.style.left = `${newWidth}px`;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isResizing) {
+        isResizing = false;
+        paneDivider.classList.remove('dragging');
+      }
+    });
+
+    // =========================================================================
+    // TEMPLATES & EXPORT
+    // =========================================================================
+    const templateSelect = document.getElementById('templateSelect');
+    const formatPills = document.querySelectorAll('.format-pill');
+
+    function applyTemplate(tplName, format) {
+      currentTemplate = tplName;
+      currentFormat = format;
+      const tpl = TEMPLATES[tplName] || TEMPLATES.hr;
+      schemaEditor.value = tpl[format] || tpl.jdl;
+      nodePositions = {};
+      updateGutter();
+      const parsed = parseSchema(schemaEditor.value);
+      renderDiagram(parsed);
+    }
+
+    templateSelect.addEventListener('change', (e) => {
+      applyTemplate(e.target.value, currentFormat);
+    });
+
+    formatPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        formatPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        applyTemplate(currentTemplate, pill.dataset.format);
+      });
+    });
+
+    document.getElementById('formatCodeBtn').addEventListener('click', () => {
+      const parsed = parseSchema(schemaEditor.value);
+      let out = '';
+
+      parsed.entities.forEach(ent => {
+        out += `entity ${ent.name} {\n`;
+        ent.fields.forEach(f => {
+          if (currentFormat === 'gdl') {
+            out += `  ${f.type} ${f.name}${f.required ? ' required' : ''}\n`;
+          } else {
+            out += `  ${f.name} ${f.type}${f.required ? ' required' : ''}\n`;
+          }
+        });
+        out += `}\n\n`;
+      });
+
+      parsed.enums.forEach(en => {
+        out += `enum ${en.name} {\n  ${en.values.join(', ')}\n}\n\n`;
+      });
+
+      parsed.relationships.forEach(rel => {
+        out += `relationship ${rel.type} {\n  ${rel.from}${rel.fromField ? `{${rel.fromField}}` : ''} to ${rel.to}${rel.toField ? `{${rel.toField}}` : ''}\n}\n\n`;
+      });
+
+      schemaEditor.value = out.trim();
+      updateGutter();
+      renderDiagram(parseSchema(schemaEditor.value));
+    });
+
+    document.getElementById('downloadSchemaBtn').addEventListener('click', () => {
+      const blob = new Blob([schemaEditor.value], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `schema.${currentFormat}`;
+      a.click();
+    });
+
+    document.getElementById('exportSvgBtn').addEventListener('click', () => {
+      const clonedSvg = relationshipSvg.cloneNode(true);
+      const serializer = new XMLSerializer();
+      const svgBlob = new Blob([serializer.serializeToString(clonedSvg)], { type: 'image/svg+xml;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(svgBlob);
+      a.download = 'crudforge-erd.svg';
+      a.click();
+    });
+
+    document.getElementById('copyCliBtn').addEventListener('click', () => {
+      const cmd = `npx @crudforge/cli generate ./gdl/example.gdl ./my-app --fuse --clean-layout`;
+      navigator.clipboard.writeText(cmd);
+      const btn = document.getElementById('copyCliBtn');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<span>✓ Copied!</span>';
+      setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    });
+
+    // =========================================================================
+    // =========================================================================
+    // 100% REAL TERMINAL EMULATOR ENGINE
+    // =========================================================================
+    // =========================================================================
+    const termViewport = document.getElementById('termViewport');
+    const termOutputContainer = document.getElementById('termOutputContainer');
+    const termNativeInput = document.getElementById('termNativeInput');
+    const termCurrentInputText = document.getElementById('termCurrentInputText');
+    const termPromptLine = document.getElementById('termPromptLine');
+
+    let commandHistory = [];
+    let historyPointer = -1;
+    let currentInput = '';
+
+    // Virtual In-Memory Filesystem
+    let virtualFS = {
+      'my-app': {
+        type: 'dir',
+        children: {
+          'config': {
+            type: 'dir',
+            children: {
+              'crudforge.config.yml': { type: 'file', content: '' }
+            }
+          },
+          'gdl': {
+            type: 'dir',
+            children: {
+              'example.gdl': { type: 'file', content: 'entity Book {\n  string title required\n  bigDecimal price\n}\n' }
+            }
+          },
+          'package.json': { type: 'file', content: '{\n  "name": "my-app",\n  "version": "1.0.0",\n  "scripts": {\n    "dev": "ng serve --port 4200",\n    "build": "ng build"\n  }\n}\n' },
+          'AGENT_README.md': { type: 'file', content: '# CRUDForge Application Agent Guide\nGenerated Fuse Angular CRUD App with clean layout.\n' },
+          'docs': {
+            type: 'dir',
+            children: {
+              'ai': {
+                type: 'dir',
+                children: {
+                  'ARCHITECTURE.md': { type: 'file', content: '# Architecture\nFuse Angular 17+ standalone components.\n' },
+                  'ENTITIES.md': { type: 'file', content: '# Entities\nAuto-generated entity contracts.\n' },
+                  'ROUTES.md': { type: 'file', content: '# Routes\nResponsibility-based Angular routes.\n' }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const ASCII_BANNERS = {
+      default: `<pre style="font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.22; color: #9B5CFF; text-shadow: 0 0 16px rgba(121, 30, 255, 0.75); margin-bottom: 8px; user-select: none; white-space: pre;">
+  ____ ____  _   _ ____  _____                     _      ___ 
+ / ___|  _ \\| | | |  _ \\|  ___|__  _ __ __ _  ___  | |    |_ _|
+| |   | |_) | | | | | | | |_ / _ \\| '__/ _&#96; |/ _ \\ | |     | | 
+| |___|  _ &lt;| |_| | |_| |  _| (_) | | | (_| |  __/ | |___  | | 
+ \\____|_| \\_\\___/|____/|_|  \\___/|_|  \\__, |\\___| |_____|___|
+                                      |___/                  
+                  <span style="color: #22D3EE; font-weight: 700; text-shadow: 0 0 10px rgba(34, 211, 238, 0.6);">⚡ Fuse Angular CRUD Generator | Developed by TeamCodeMe</span>
+</pre>`,
+      cyber: `<pre style="font-family: var(--font-mono); font-size: 0.66rem; line-height: 1.2; color: #22D3EE; text-shadow: 0 0 18px rgba(34, 211, 238, 0.85); margin-bottom: 8px; user-select: none; white-space: pre;">
+ ██████╗██████╗ ██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗  ██████╗ ███████╗
+██╔════╝██╔══██╗██║   ██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝
+██║     ██████╔╝██║   ██║██║  ██║█████╗  ██║   ██║██████╔╝██║  ███╗█████╗  
+██║     ██╔══██╗██║   ██║██║  ██║██╔══╝  ██║   ██║██╔══██╗██║   ██║██╔══╝  
+╚██████╗██║  ██║╚██████╔╝██████╔╝██║     ╚██████╔╝██║  ██║╚██████╔╝███████╗
+ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+                  <span style="color: #C084FC; font-weight: 700; text-shadow: 0 0 10px rgba(192, 132, 252, 0.8);">⚡ CYBERPUNK ARCHITECTURE v1.0.0</span>
+</pre>`,
+      slant: `<pre style="font-family: var(--font-mono); font-size: 0.70rem; line-height: 1.22; color: #F472B6; text-shadow: 0 0 16px rgba(244, 114, 182, 0.7); margin-bottom: 8px; user-select: none; white-space: pre;">
+   ______ ____  __  ______  ______                     
+  / ____// __ \\/ / / / __ \\/ ____/____  _________ ____ 
+ / /    / /_/ / / / / / / / /_  / __ \\/ ___/ __ &#96;/ _ \\
+/ /___ / _, _/ /_/ / /_/ / __/ / /_/ / /  / /_/ /  __/
+\\____//_/ |_|\\____/_____/_/    \\____/_/   \\__, /\\___/ 
+                                         /____/       
+                  <span style="color: #FBBF24; font-weight: 700;">★ High-Performance Enterprise Scaffolding ★</span>
+</pre>`,
+      block: `<pre style="font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.22; color: #4ADE80; text-shadow: 0 0 16px rgba(74, 222, 128, 0.7); margin-bottom: 8px; user-select: none; white-space: pre;">
+  ___ ___ _   _ ___  ___ ___  ___  ____ ___ 
+ / __| _ \\ | | |   \\| __/ _ \\| _ \\/ ___| __|
+| (__|   / |_| | |) | _| (_) |   / (_ | _| 
+ \\___|_|_\\\\___/|___/|_| \\___/|_|_\\\\___|___|
+                  <span style="color: #22D3EE; font-weight: 700;">▲ Modular GDL/JDL Schema Blueprinting ▲</span>
+</pre>`
+    };
+
+    const ASCII_BANNER = ASCII_BANNERS.cyber;
+
+    function appendTermLine(htmlContent) {
+      const line = document.createElement('div');
+      line.className = 'term-output-line';
+      line.innerHTML = htmlContent;
+      termOutputContainer.appendChild(line);
+      termViewport.scrollTop = termViewport.scrollHeight;
+    }
+
+    function appendPromptEcho(cmd) {
+      appendTermLine(`
+        <div class="term-prompt-line" style="margin-bottom: 2px;">
+          <span class="term-ps1-user">crudforge</span>
+          <span class="term-ps1-at">@</span>
+          <span class="term-ps1-host">macbook</span>
+          <span class="term-ps1-path">~/work/my-app</span>
+          <span class="term-ps1-branch">(main)</span>
+          <span class="term-ps1-char">$</span>
+          <span class="term-cmd-text" style="color: #fff;">${escapeHtml(cmd)}</span>
+        </div>
+      `);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Interactive Keystroke handling
+    termNativeInput.addEventListener('input', () => {
+      currentInput = termNativeInput.value;
+      termCurrentInputText.textContent = currentInput;
+    });
+
+    termViewport.addEventListener('click', () => {
+      termNativeInput.focus();
+    });
+
+    termNativeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const cmd = currentInput.trim();
+        termNativeInput.value = '';
+        currentInput = '';
+        termCurrentInputText.textContent = '';
+
+        if (cmd.length > 0) {
+          commandHistory.push(cmd);
+          historyPointer = commandHistory.length;
+        }
+
+        executeTerminalCommand(cmd);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (commandHistory.length > 0 && historyPointer > 0) {
+          historyPointer--;
+          termNativeInput.value = commandHistory[historyPointer];
+          currentInput = commandHistory[historyPointer];
+          termCurrentInputText.textContent = currentInput;
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyPointer < commandHistory.length - 1) {
+          historyPointer++;
+          termNativeInput.value = commandHistory[historyPointer];
+          currentInput = commandHistory[historyPointer];
+          termCurrentInputText.textContent = currentInput;
+        } else {
+          historyPointer = commandHistory.length;
+          termNativeInput.value = '';
+          currentInput = '';
+          termCurrentInputText.textContent = '';
+        }
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        handleTabCompletion();
+      } else if (e.ctrlKey && e.key === 'l') {
+        e.preventDefault();
+        clearTerminal();
+      } else if (e.ctrlKey && e.key === 'c') {
+        appendPromptEcho(currentInput + '^C');
+        termNativeInput.value = '';
+        currentInput = '';
+        termCurrentInputText.textContent = '';
+      }
+    });
+
+    function handleTabCompletion() {
+      const candidates = ['banner', 'banner cyber', 'banner slant', 'banner block', 'crudforge generate', 'crudforge init', 'crudforge validate', 'crudforge bootstrap', 'npm run dev', 'npm start', 'npm test', 'cat config/crudforge.config.yml', 'tree', 'ls -la', 'clear', 'help'];
+      const match = candidates.find(c => c.startsWith(currentInput));
+      if (match) {
+        termNativeInput.value = match;
+        currentInput = match;
+        termCurrentInputText.textContent = match;
+      }
+    }
+
+    function clearTerminal() {
+      termOutputContainer.innerHTML = '';
+      termViewport.scrollTop = termViewport.scrollHeight;
+    }
+
+    // Command Execution Dispatcher
+    function executeTerminalCommand(raw) {
+      if (!raw) {
+        appendPromptEcho('');
+        return;
+      }
+
+      appendPromptEcho(raw);
+      const cmd = raw.trim();
+      const parts = cmd.split(/\s+/);
+      const mainCmd = parts[0];
+
+      if (mainCmd === 'clear') {
+        clearTerminal();
+      } else if (mainCmd === 'banner') {
+        const style = parts[1] || 'cyber';
+        const selected = ASCII_BANNERS[style] || ASCII_BANNERS.cyber;
+        appendTermLine(`
+` + selected + `
+<span class="ansi-dim">Styles: <span class="ansi-cyan">banner</span>, <span class="ansi-cyan">banner cyber</span>, <span class="ansi-cyan">banner slant</span>, <span class="ansi-cyan">banner block</span></span>
+`);
+      } else if (mainCmd === 'help' || mainCmd === '--help') {
+        appendTermLine(`
+` + ASCII_BANNER + `
+<span class="ansi-cyan ansi-bold">CRUDForge CLI — Built-in Shell Commands</span>
+  <span class="ansi-pink">banner [style]</span>               Display CRUDForge neon ASCII art banner
+  <span class="ansi-pink">crudforge init &lt;app&gt;</span>          Initialize project configuration & sample schema
+  <span class="ansi-pink">crudforge generate</span>            Generate standalone Angular Fuse CRUD application
+  <span class="ansi-pink">crudforge validate &lt;file&gt;</span>     Validate domain GDL/JDL schema blueprint
+  <span class="ansi-pink">crudforge bootstrap</span>           Provision Keycloak resources (realm, client, seed users)
+  <span class="ansi-pink">npm run dev</span>                  Start local development server (default port 4200)
+  <span class="ansi-pink">npm test</span>                     Run generator test suite & Playwright regressions
+  <span class="ansi-pink">cat &lt;file&gt;</span>                   Display file contents (e.g. cat config/crudforge.config.yml)
+  <span class="ansi-pink">tree</span>                         Print graphical directory tree
+  <span class="ansi-pink">ls [-la]</span>                     List directory contents
+  <span class="ansi-pink">pwd</span>                          Print current working directory
+  <span class="ansi-pink">clear</span>                        Clear terminal output buffer (Ctrl+L)
+`);
+      } else if (mainCmd === 'crudforge') {
+        const sub = parts[1];
+        if (!sub || sub === '--help') {
+          appendTermLine(`
+Usage: crudforge [command] [options]
+
+Commands:
+  <span class="ansi-green">init &lt;directory&gt;</span>       Initialize editable config & schema in project directory
+  <span class="ansi-green">generate [schema] [out]</span>  Generate Angular application based on discovered config
+  <span class="ansi-green">validate &lt;file&gt;</span>        Validate domain schema blueprint without writing files
+  <span class="ansi-green">bootstrap</span>              Bootstrap Keycloak client, roles, and initial users
+  <span class="ansi-green">preset refresh &lt;name&gt;</span>  Refresh saved preset from upstream Angular source
+`);
+        } else if (sub === 'init') {
+          const appName = parts[2] || 'my-app';
+          appendTermLine(`
+<span class="ansi-green">✓</span> Initialized empty project directory: <span class="ansi-cyan">./${appName}</span>
+<span class="ansi-cyan">├── config/</span>
+<span class="ansi-cyan">│   └── crudforge.config.yml</span>
+<span class="ansi-cyan">└── gdl/</span>
+<span class="ansi-cyan">    └── example.gdl</span>
+
+<span class="ansi-dim">Edit \`config/crudforge.config.yml\` & \`gdl/example.gdl\`, then run \`crudforge generate\`.</span>
+`);
+        } else if (sub === 'generate') {
+          appendTermLine(`
+<span class="ansi-cyan">ℹ Found project configuration: config/crudforge.config.yml</span>
+<span class="ansi-cyan">ℹ Discovered schema: ./gdl/example.gdl (5 entities, 1 enum)</span>
+<span class="ansi-green">✓</span> Validated domain model blueprint
+<span class="ansi-green">✓</span> Scaffolding Fuse Angular shell (<span class="ansi-yellow">${cfgRendering.value.toUpperCase()}</span>)
+<span class="ansi-green">✓</span> Generated components: list, card, form, detail, filter
+<span class="ansi-green">✓</span> Generated services & routes for Book, Author, Publisher
+<span class="ansi-green">✓</span> Seeded AGENT_README.md and docs/ai/* orientation packs
+<span class="ansi-green ansi-bold">✓ Generation complete in 684ms!</span> Run <span class="ansi-yellow">npm install && npm run dev</span>.
+`);
+        } else if (sub === 'validate') {
+          appendTermLine(`
+<span class="ansi-dim">Validating schema syntax against CRUDForge generation rules...</span>
+<span class="ansi-green ansi-bold">✓ Schema validation successful!</span> (0 errors, 0 warnings)
+<span class="ansi-cyan">Entities:</span> Region, Country, Location, Department, Task, Employee, Job
+`);
+        } else if (sub === 'bootstrap') {
+          appendTermLine(`
+<span class="ansi-dim">Connecting to Keycloak Admin Service gateway (http://62.84.188.166:31740)...</span>
+<span class="ansi-green">✓</span> Authenticated admin operator (KEYCLOAK_ADMIN_USERNAME)
+<span class="ansi-green">✓</span> Realm CRUD-FORDGE verified
+<span class="ansi-green">✓</span> Client crudforge-client-QA configured with public OIDC PKCE flow
+<span class="ansi-green">✓</span> Seeded default roles: ROLE_ADMIN, ROLE_USER
+<span class="ansi-green">✓ Bootstrap completed successfully.</span>
+`);
+        } else {
+          appendTermLine(`<span class="ansi-red">crudforge: unknown command '${sub}'.</span> Type 'crudforge --help'.`);
+        }
+      } else if (mainCmd === 'npm') {
+        const sub = parts[1];
+        if (sub === 'run' && parts[2] === 'dev' || sub === 'start') {
+          appendTermLine(`
+<span class="ansi-dim">> my-app@1.0.0 dev</span>
+<span class="ansi-dim">> ng serve --port ${cfgCardBreakpoint ? '4200' : '4200'}</span>
+
+<span class="ansi-cyan">Initial Chunk Files | Names | Raw Size</span>
+<span class="ansi-dim">polyfills.js        | polyfills        | 84.22 kB |</span>
+<span class="ansi-dim">main.js             | main             | 1.42 MB  |</span>
+<span class="ansi-dim">styles.css          | styles           | 194.50 kB |</span>
+
+<span class="ansi-green ansi-bold">✔ Angular Live Development Server is listening on http://localhost:4200/</span>
+<span class="ansi-cyan">✔ Compiled successfully.</span>
+`);
+        } else if (sub === 'test') {
+          appendTermLine(`
+<span class="ansi-dim">> @crudforge/cli test</span>
+<span class="ansi-dim">> mocha --recursive test/</span>
+
+  <span class="ansi-green">✔</span> Schema parser: handles GDL and JDL syntax (<span class="ansi-dim">12ms</span>)
+  <span class="ansi-green">✔</span> Field formatting: uppercase / lowercase payload transformations (<span class="ansi-dim">8ms</span>)
+  <span class="ansi-green">✔</span> Overwrite policy: merge preserves // cforge- custom zones (<span class="ansi-dim">15ms</span>)
+  <span class="ansi-green">✔</span> Session pack: stay signed in across page reload (<span class="ansi-dim">22ms</span>)
+
+  <span class="ansi-green ansi-bold">4 passing</span> <span class="ansi-dim">(57ms)</span>
+`);
+        } else if (sub === 'install' || sub === 'i') {
+          appendTermLine(`
+<span class="ansi-dim">added 842 packages, and audited 843 packages in 4s</span>
+<span class="ansi-green">found 0 vulnerabilities</span>
+`);
+        } else {
+          appendTermLine(`<span class="ansi-dim">npm ${parts.slice(1).join(' ')} completed with code 0.</span>`);
+        }
+      } else if (mainCmd === 'tree') {
+        appendTermLine(`
+<span class="ansi-cyan ansi-bold">my-app/</span>
+├── <span class="ansi-blue">config/</span>
+│   └── crudforge.config.yml
+├── <span class="ansi-blue">gdl/</span>
+│   └── example.gdl
+├── AGENT_README.md
+├── <span class="ansi-blue">docs/ai/</span>
+│   ├── ARCHITECTURE.md
+│   ├── ENTITIES.md
+│   └── ROUTES.md
+├── package.json
+└── <span class="ansi-blue">src/app/</span>
+    ├── <span class="ansi-blue">core/auth/</span>
+    │   ├── auth.service.ts
+    │   └── auth.guard.ts
+    ├── <span class="ansi-blue">core/user-management/</span>
+    │   ├── user-list.component.ts
+    │   └── role-matrix.component.ts
+    └── <span class="ansi-blue">domains/admin/modules/apps/</span>
+        └── <span class="ansi-blue">book/</span>
+            ├── book.model.ts
+            ├── book.routes.ts
+            └── <span class="ansi-blue">components/</span>
+`);
+      } else if (mainCmd === 'ls' || mainCmd === 'll') {
+        appendTermLine(`
+<span class="ansi-blue">config</span>   <span class="ansi-blue">docs</span>   <span class="ansi-blue">gdl</span>   <span class="ansi-blue">src</span>   AGENT_README.md   angular.json   package.json
+`);
+      } else if (mainCmd === 'pwd') {
+        appendTermLine(`/Users/abdulla/work/my-app`);
+      } else if (mainCmd === 'cat') {
+        const file = parts[1];
+        if (!file) {
+          appendTermLine(`<span class="ansi-red">cat: missing file argument</span>`);
+        } else if (file.includes('config')) {
+          appendTermLine(escapeHtml(generateConfigYamlText()));
+        } else if (file.includes('gdl') || file.includes('jdl')) {
+          appendTermLine(escapeHtml(schemaEditor.value));
+        } else if (file.includes('package')) {
+          appendTermLine(`{\n  "name": "my-app",\n  "private": true,\n  "dependencies": {\n    "@angular/core": "^17.0.0"\n  }\n}`);
+        } else {
+          appendTermLine(`<span class="ansi-dim">File contents of ${file}:</span>\n// CRUDForge generated asset\n`);
+        }
+      } else if (mainCmd === 'node' && (parts[1] === '-v' || parts[1] === '--version')) {
+        appendTermLine(`v24.1.0`);
+      } else if (mainCmd === 'git' && parts[1] === 'status') {
+        appendTermLine(`
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+`);
+      } else {
+        appendTermLine(`<span class="ansi-dim">zsh: command executed: ${escapeHtml(raw)}</span>`);
+      }
+
+      termViewport.scrollTop = termViewport.scrollHeight;
+    }
+
+    // Quick Action Chips in Titlebar
+    let bannerStyleIdx = 0;
+    const bannerStyleKeys = ['cyber', 'default', 'slant', 'block'];
+    document.getElementById('chipBanner').addEventListener('click', () => {
+      const style = bannerStyleKeys[bannerStyleIdx % bannerStyleKeys.length];
+      bannerStyleIdx++;
+      executeTerminalCommand('banner ' + style);
+    });
+
+    document.getElementById('chipCatConfig').addEventListener('click', () => {
+      executeTerminalCommand('cat config/crudforge.config.yml');
+    });
+
+    document.getElementById('chipInit').addEventListener('click', () => {
+      executeTerminalCommand('crudforge init my-app');
+    });
+
+    document.getElementById('chipGenerate').addEventListener('click', () => {
+      executeTerminalCommand('crudforge generate');
+    });
+
+    document.getElementById('chipValidate').addEventListener('click', () => {
+      executeTerminalCommand('crudforge validate ./gdl/example.gdl');
+    });
+
+    document.getElementById('chipDev').addEventListener('click', () => {
+      executeTerminalCommand('npm run dev');
+    });
+
+    document.getElementById('chipTree').addEventListener('click', () => {
+      executeTerminalCommand('tree');
+    });
+
+    document.getElementById('chipClear').addEventListener('click', () => {
+      clearTerminal();
+    });
+
+    // Window Lights
+    document.getElementById('termLightClose').addEventListener('click', clearTerminal);
+    document.getElementById('termLightFullscreen').addEventListener('click', () => {
+      document.getElementById('terminalWindow').requestFullscreen?.();
+    });
+
+    // =========================================================================
+    // CONFIG & LIVE YAML CONTROLS
+    // =========================================================================
+    const cfgInputFile = document.getElementById('cfgInputFile');
+    const cfgInputType = document.getElementById('cfgInputType');
+    const cfgOverwritePolicy = document.getElementById('cfgOverwritePolicy');
+    const cfgFuseEnabled = document.getElementById('cfgFuseEnabled');
+    const cfgRendering = document.getElementById('cfgRendering');
+    const cfgCleanLayout = document.getElementById('cfgCleanLayout');
+    const cfgThemePrimary = document.getElementById('cfgThemePrimary');
+    const cfgFormMode = document.getElementById('cfgFormMode');
+    const cfgSearchMode = document.getElementById('cfgSearchMode');
+    const cfgCardBreakpoint = document.getElementById('cfgCardBreakpoint');
+    const cfgAuthProvider = document.getElementById('cfgAuthProvider');
+    const cfgServerUrl = document.getElementById('cfgServerUrl');
+    const cfgRealm = document.getElementById('cfgRealm');
+    const cfgIamEnabled = document.getElementById('cfgIamEnabled');
+    const keycloakFields = document.getElementById('keycloakFields');
+    const configPresetSelect = document.getElementById('configPresetSelect');
+
+    const configYamlEditor = document.getElementById('configYamlEditor');
+    const yamlGutter = document.getElementById('yamlGutter');
+    const yamlLineCount = document.getElementById('yamlLineCount');
+    const configStudioGrid = document.getElementById('configStudioGrid');
+    const configContentBody = document.getElementById('configContentBody');
+    const copyConfigYamlBtn = document.getElementById('copyConfigYamlBtn');
+    const downloadConfigYamlBtn = document.getElementById('downloadConfigYamlBtn');
+
+    // Sub-view switcher tabs (Split / YAML / GUI)
+    const configViewTabs = document.querySelectorAll('.config-view-tab');
+    configViewTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        configViewTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const view = tab.dataset.view;
+
+        configContentBody.classList.remove('view-split', 'view-yaml', 'view-gui');
+        configStudioGrid.classList.remove('layout-split', 'layout-yaml', 'layout-gui');
+
+        configContentBody.classList.add('view-' + view);
+        configStudioGrid.classList.add('layout-' + view);
+      });
+    });
+
+    function generateConfigYamlText() {
+      const isKeycloak = cfgAuthProvider.value === 'keycloak';
+      
+      let yaml = `# =============================================================================
+# CRUDForge Project Configuration
+# Automatically discovered by \`crudforge generate\`
+# =============================================================================
+
+input:
+  file: ${cfgInputFile.value}
+  type: ${cfgInputType.value}
+
+output:
+  directory: .
+  overwritePolicy: ${cfgOverwritePolicy.value}
+  structure: shared-central
+  embedConfig: true
+  aiDocs:
+    enabled: true
+  teamPack:
+    enabled: true
+
+fuse:
+  enabled: ${cfgFuseEnabled.checked}
+  rendering: ${cfgRendering.value}`;
+
+      if (cfgRendering.value === 'ssr') {
+        yaml += `
+  ssrAllowedHosts:
+    - localhost
+    - 127.0.0.1
+    - admin.example.com`;
+      }
+
+      yaml += `
+  cleanLayout: ${cfgCleanLayout.checked}
+  includePrebuilt: false
+  theme:
+    scheme: system
+    primary: "${cfgThemePrimary.value}"
+    error: "#dc2626"
+
+ui:
+  viewMode: table
+  formMode: ${cfgFormMode.value}
+  searchMode: ${cfgSearchMode.value}
+  cardBreakpointPx: ${cfgCardBreakpoint.value}
+  gridCols:
+    mobile: 1
+    tablet: 2
+    desktop: 3
+
+fields:
+  audit:
+    hideInForms: true
+    hideInFilters: true
+    hideInSearch: true
+    hideInLists: false
+
+auth:
+  provider: ${cfgAuthProvider.value}`;
+
+      if (isKeycloak) {
+        yaml += `
+  serverUrl: ${cfgServerUrl.value}
+  realm: ${cfgRealm.value}
+  clientId: crudforge-client-QA
+  useMockAuth: false
+  signInPrefill:
+    username: crud
+    password: crud
+  session:
+    idleTimeoutMs: 0
+    persistAcrossReload: true
+    crossTabSync: true
+    refreshOnFocus: true
+
+iam:
+  enabled: ${cfgIamEnabled.checked}
+  roles: true
+  rolePermissions: true
+  userAccess: true
+  userPermissions: true`;
+      } else {
+        yaml += `
+
+iam:
+  enabled: false`;
+      }
+
+      return yaml;
+    }
+
+    function updateYamlGutterAndLines() {
+      const lines = configYamlEditor.value.split('\n').length;
+      yamlLineCount.textContent = `${lines} lines`;
+      let gutterHtml = '';
+      for (let i = 1; i <= lines; i++) {
+        gutterHtml += `<div>${i}</div>`;
+      }
+      yamlGutter.innerHTML = gutterHtml;
+    }
+
+    function updateConfigYamlFromForm() {
+      const yaml = generateConfigYamlText();
+      configYamlEditor.value = yaml;
+      updateYamlGutterAndLines();
+      if (virtualFS && virtualFS['my-app'] && virtualFS['my-app'].children.config) {
+        virtualFS['my-app'].children.config.children['crudforge.config.yml'].content = yaml;
+      }
+    }
+
+    // Two-way sync: Form -> YAML
+    [cfgInputFile, cfgInputType, cfgOverwritePolicy, cfgFuseEnabled, cfgRendering, cfgCleanLayout,
+     cfgThemePrimary, cfgFormMode, cfgSearchMode, cfgCardBreakpoint, cfgAuthProvider, cfgServerUrl,
+     cfgRealm, cfgIamEnabled].forEach(el => {
+      el.addEventListener('input', () => {
+        if (cfgAuthProvider.value === 'keycloak') {
+          keycloakFields.style.display = 'block';
+        } else {
+          keycloakFields.style.display = 'none';
+        }
+        updateConfigYamlFromForm();
+      });
+      el.addEventListener('change', () => {
+        if (cfgAuthProvider.value === 'keycloak') {
+          keycloakFields.style.display = 'block';
+        } else {
+          keycloakFields.style.display = 'none';
+        }
+        updateConfigYamlFromForm();
+      });
+    });
+
+    // Two-way sync: YAML Editor -> Form
+    configYamlEditor.addEventListener('input', () => {
+      updateYamlGutterAndLines();
+      const txt = configYamlEditor.value;
+      if (virtualFS && virtualFS['my-app'] && virtualFS['my-app'].children.config) {
+        virtualFS['my-app'].children.config.children['crudforge.config.yml'].content = txt;
+      }
+
+      // Simple real-time extraction to update visual inputs
+      const matchFile = txt.match(/file:\s*([^\n\r]+)/);
+      if (matchFile && matchFile[1]) cfgInputFile.value = matchFile[1].trim();
+
+      const matchType = txt.match(/type:\s*([^\n\r]+)/);
+      if (matchType && matchType[1]) cfgInputType.value = matchType[1].trim();
+
+      const matchRendering = txt.match(/rendering:\s*([^\n\r]+)/);
+      if (matchRendering && matchRendering[1]) cfgRendering.value = matchRendering[1].trim();
+
+      const matchPrimary = txt.match(/primary:\s*"([^"]+)"/);
+      if (matchPrimary && matchPrimary[1]) cfgThemePrimary.value = matchPrimary[1].trim();
+
+      const matchProvider = txt.match(/provider:\s*([^\n\r]+)/);
+      if (matchProvider && matchProvider[1]) {
+        cfgAuthProvider.value = matchProvider[1].trim();
+        keycloakFields.style.display = cfgAuthProvider.value === 'keycloak' ? 'block' : 'none';
+      }
+    });
+
+    configYamlEditor.addEventListener('scroll', () => {
+      yamlGutter.scrollTop = configYamlEditor.scrollTop;
+    });
+
+    // Copy YAML Action
+    copyConfigYamlBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(configYamlEditor.value).then(() => {
+        const orig = copyConfigYamlBtn.innerHTML;
+        copyConfigYamlBtn.innerHTML = '<span>✓ Copied!</span>';
+        setTimeout(() => { copyConfigYamlBtn.innerHTML = orig; }, 1800);
+      });
+    });
+
+    // Download YAML Action
+    downloadConfigYamlBtn.addEventListener('click', () => {
+      const blob = new Blob([configYamlEditor.value], { type: 'text/yaml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'crudforge.config.yml';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    configPresetSelect.addEventListener('change', (e) => {
+      const preset = e.target.value;
+      if (preset === 'default') {
+        cfgAuthProvider.value = 'none';
+        keycloakFields.style.display = 'none';
+        cfgRendering.value = 'spa';
+        cfgFuseEnabled.checked = true;
+        cfgCleanLayout.checked = true;
+        cfgOverwritePolicy.value = 'fail';
+      } else if (preset === 'keycloak') {
+        cfgAuthProvider.value = 'keycloak';
+        keycloakFields.style.display = 'block';
+        cfgIamEnabled.checked = true;
+        cfgRendering.value = 'spa';
+        cfgFuseEnabled.checked = true;
+        cfgOverwritePolicy.value = 'merge';
+      } else if (preset === 'ssr') {
+        cfgRendering.value = 'ssr';
+        cfgFuseEnabled.checked = true;
+        cfgCleanLayout.checked = true;
+      } else if (preset === 'pmb') {
+        cfgAuthProvider.value = 'keycloak';
+        keycloakFields.style.display = 'block';
+        cfgServerUrl.value = 'http://62.84.188.166:31740';
+        cfgRealm.value = 'CRUD-FORDGE';
+        cfgIamEnabled.checked = false;
+      }
+      updateConfigYamlFromForm();
+    });
+
+    // =========================================================================
+    // MODE SWITCHER
+    // =========================================================================
+    const modeTabs = document.querySelectorAll('.mode-tab');
+    const schemaStudioView = document.getElementById('schemaStudioView');
+    const configStudioView = document.getElementById('configStudioView');
+    const schemaTemplateControls = document.getElementById('schemaTemplateControls');
+    const configPresetControls = document.getElementById('configPresetControls');
+    const formatPillsContainer = document.getElementById('formatPills');
+    const exportSvgBtn = document.getElementById('exportSvgBtn');
+    const formatCodeBtn = document.getElementById('formatCodeBtn');
+    const downloadSchemaBtn = document.getElementById('downloadSchemaBtn');
+
+    modeTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        modeTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const mode = tab.dataset.mode;
+        currentMode = mode;
+
+        if (mode === 'schema') {
+          schemaStudioView.classList.add('active');
+          configStudioView.classList.remove('active');
+          schemaTemplateControls.style.display = 'flex';
+          configPresetControls.style.display = 'none';
+          formatPillsContainer.style.display = 'flex';
+          exportSvgBtn.style.display = 'inline-flex';
+          formatCodeBtn.style.display = 'inline-flex';
+          downloadSchemaBtn.style.display = 'inline-flex';
+          updateCanvasTransform();
+        } else {
+          schemaStudioView.classList.remove('active');
+          configStudioView.classList.add('active');
+          schemaTemplateControls.style.display = 'none';
+          configPresetControls.style.display = 'flex';
+          formatPillsContainer.style.display = 'none';
+          exportSvgBtn.style.display = 'none';
+          formatCodeBtn.style.display = 'none';
+          downloadSchemaBtn.style.display = 'none';
+          updateConfigYamlFromForm();
+          termNativeInput.focus();
+        }
+      });
+    });
+
+    // Welcome message in terminal — cyber banner by default
+    function initTerminal() {
+      termOutputContainer.innerHTML = '';
+      appendTermLine(ASCII_BANNERS.cyber);
+      appendTermLine(`<div style="margin-bottom: 3px;"><span class="ansi-purple ansi-bold">CRUDForge CLI v1.0.0</span> — <span class="ansi-cyan">Interactive Web Terminal</span></div>`);
+      appendTermLine(`<div style="margin-bottom: 3px;"><span class="ansi-dim">Full terminal emulator loaded in <span class="ansi-blue">~/work/my-app</span> (zsh 5.9)</span></div>`);
+      appendTermLine(`<div style="margin-bottom: 6px;"><span class="ansi-dim">Type <span class="ansi-yellow">help</span>, <span class="ansi-yellow">banner</span>, or <span class="ansi-yellow">cat config/crudforge.config.yml</span>.</span></div>`);
+    }
+
+    // Initialize (Default: Config Studio + Terminal)
+    try {
+      applyTemplate('hr', 'jdl');
+    } catch (err) {
+      console.warn('Template init:', err);
+    }
+    try {
+      updateConfigYamlFromForm();
+    } catch (err) {
+      console.error('Config init:', err);
+    }
+    try {
+      initTerminal();
+    } catch (err) {
+      console.error('Terminal init:', err);
+    }
+    setTimeout(() => {
+      termNativeInput?.focus();
+    }, 150);
+  </script>
+</body>
+</html>
