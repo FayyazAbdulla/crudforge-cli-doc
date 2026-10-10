@@ -1,9 +1,9 @@
 ---
 title: CRUDForge
-description: Generate Fuse Angular CRUD apps from JDL — auth, IAM, and clean admin UX.
+description: Generate Fuse Angular CRUD apps from GDL or JDL — auth, IAM, and clean admin UX.
 template: splash
 hero:
-  tagline: Fuse Angular CRUD Generator from JDL
+  tagline: Fuse Angular CRUD Generator from GDL / JDL
   actions:
     - text: Get started
       link: /getting-started/introduction/
@@ -17,17 +17,20 @@ import InstallBar from '../../components/InstallBar.astro';
 ## What you get
 
 <CardGrid stagger>
-  <Card title="JDL → Fuse Angular" icon="rocket">
-    Generate list, card, form, detail, filters, and services into a Fuse starter with clean layout.
+  <Card title="GDL / JDL → Fuse Angular" icon="rocket">
+    Generate list, card, form, detail, filters, and services into a Fuse starter with clean layout and SPA or SSR rendering.
   </Card>
-  <Card title="Keycloak overlay" icon="seti:lock">
-    Optional auth + IAM packs — never model User/Role as JDL entities.
+  <Card title="Keycloak & IAM Overlay" icon="seti:lock">
+    Turnkey auth and user management overlays — with permission matrices and screen ACLs without polluting your domain schema.
   </Card>
-  <Card title="Session pack" icon="approve-check">
-    Stay signed in by default, resilient refresh, optional disabled-account overlay.
+  <Card title="Session & UX Packs" icon="approve-check">
+    Stay signed in by default, resilient single-flight refresh, and optional disabled-account freeze overlay.
   </Card>
-  <Card title="Agent-ready" icon="seti:folder">
-    Generated apps ship `AGENT_README.md` + `docs/ai/*` for humans and coding agents.
+  <Card title="Field Formatting & Presets" icon="setting">
+    Real-time text case formatting, audit field controls, and reusable backend testing presets (e.g. PMB).
+  </Card>
+  <Card title="Agent-Ready Repositories" icon="seti:folder">
+    Generated projects ship `AGENT_README.md` and `docs/ai/*` to guide both humans and AI coding agents.
   </Card>
 </CardGrid>
 

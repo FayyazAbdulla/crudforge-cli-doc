@@ -3,18 +3,21 @@ title: Features overview
 description: What a generated Fuse CRUD app includes — with screenshots.
 ---
 
-CRUDForge turns a JDL domain into a Fuse admin app: entity CRUD, optional Keycloak auth, and an IAM overlay. Below is the product surface you’ll ship — not Fuse demo chrome.
+CRUDForge turns a GDL or JDL domain into a Fuse Angular admin app: entity CRUD, optional Keycloak auth, IAM overlay, input formatting, and clean layout.
 
-## At a glance
+## At a Glance
 
 | Area | What you get |
 |------|----------------|
-| Entity CRUD | List, card, form (sidebar or page), detail, filter, actions |
-| Search | Field `contains` by default (`ui.searchMode: field`) |
-| Auth | Optional Keycloak pack — mock or live |
-| IAM | Users, roles, matrices, ACL-filtered nav |
-| Session | Stay signed in by default; optional disabled-account overlay |
-| Branding | Root `fuseTheme` / `#791EFF` violet |
+| **Entity CRUD** | List, card, form (sidebar or page), detail, filter, actions, column preferences |
+| **Schema Formats** | GDL and JDL domain blueprints with validation |
+| **Search & Filter** | Field `contains` by default (`ui.searchMode: field`) or Elasticsearch `global` |
+| **Input Formatting** | Real-time `uppercase` / `lowercase` with composition & cursor preservation |
+| **Rendering** | Single Page Application (`spa`) or Node Universal (`ssr`) |
+| **Auth** | Keycloak OIDC pack — mock or live Admin Service middleware |
+| **IAM** | Users, roles, screen access matrices, component ACL stamps |
+| **Session** | Stay signed in across reloads, resilient refresh, disabled-account overlay |
+| **Branding** | Clean layout, transparent brand PNGs, root `#791EFF` theming |
 
 ## Gallery
 
@@ -28,7 +31,7 @@ Clean split layout: wordmark + credentials on the left, welcome copy on the righ
 
 ![Book list](../assets/screenshots/03-book-list.png)
 
-Paginated table, field search, New / filter / export / pin / flag actions.
+Paginated table, field search, New / filter / export / pin / flag actions, and responsive card switching.
 
 ### Sidebar form (new & edit)
 
@@ -58,9 +61,11 @@ Paginated table, field search, New / filter / export / pin / flag actions.
 
 Users, roles, and **screen access** matrices — see [IAM overlay](/features/iam/) and [Users, roles & screen access](/guides/iam-access/).
 
-## Dig deeper
+## Dig Deeper
 
 - [Entity CRUD](/features/entity-crud/)
 - [IAM overlay](/features/iam/)
 - [Auth UX](/features/auth-ux/)
 - [UI modes customization](/customization/ui-modes/)
+- [Configuration guide](/guides/configuration/)
+
