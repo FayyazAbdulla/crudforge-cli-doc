@@ -663,7 +663,7 @@
     /* ========================================================================= */
     .config-studio-grid {
       display: grid;
-      grid-template-columns: 820px 1fr;
+      grid-template-columns: 880px 1fr;
       width: 100%;
       height: 100%;
       background: #050509;
@@ -673,21 +673,21 @@
     }
 
     .config-studio-grid.layout-split {
-      grid-template-columns: 820px 1fr;
+      grid-template-columns: 880px 1fr;
     }
 
     .config-studio-grid.layout-gui {
-      grid-template-columns: 400px 1fr;
+      grid-template-columns: 460px 1fr;
     }
 
     .config-studio-grid.layout-yaml {
-      grid-template-columns: 520px 1fr;
+      grid-template-columns: 560px 1fr;
     }
 
     @media (max-width: 1400px) {
       .config-studio-grid,
       .config-studio-grid.layout-split {
-        grid-template-columns: 700px 1fr;
+        grid-template-columns: 780px 1fr;
       }
     }
 
@@ -814,7 +814,7 @@
     /* Layout States for Config Content Body */
     .config-content-body.view-split {
       display: grid !important;
-      grid-template-columns: 360px 1fr !important;
+      grid-template-columns: 420px 1fr !important;
       height: calc(100% - 38px) !important;
       min-height: 0 !important;
     }
@@ -980,6 +980,32 @@
       outline: none;
       transition: border-color 0.15s;
       user-select: text;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    input.form-input {
+      width: 100%;
+    }
+
+    select.form-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+      cursor: pointer;
+      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    select.form-select option {
+      background: #11111E;
+      color: #fff;
     }
 
     input.form-input:focus, select.form-select:focus {
@@ -1051,6 +1077,70 @@
 
     input:checked + .slider:before {
       transform: translateX(18px);
+    }
+
+    .form-row--two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .form-row--three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    .form-color-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-color-wrap input[type="color"] {
+      width: 30px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .config-scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 8px;
+    }
+
+    .config-scope-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: #D1D5DB;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .config-scope-item input[type="checkbox"] {
+      accent-color: var(--cf-brand-light);
+      cursor: pointer;
+      width: 14px;
+      height: 14px;
+    }
+
+    .config-section-subhead {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--cf-brand-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
     }
 
     /* RIGHT SIDE: PURE REAL TERMINAL CLONE */
@@ -1347,6 +1437,8 @@
           <option value="keycloak">Keycloak Enterprise + IAM</option>
           <option value="ssr">SSR Node Universal</option>
           <option value="pmb">PMB Test Sandbox</option>
+          <option value="full">Full Enterprise Stack</option>
+          <option value="mock">Offline Mock / Rapid Prototype</option>
         </select>
       </div>
 
@@ -1496,19 +1588,35 @@
             <!-- Left Sub-Pane: Visual Form Controls -->
             <aside class="config-controls-panel" id="configControlsPanel">
               
+              <!-- SECTION 1: Input, Output & Project -->
               <div class="config-section-card">
                 <div class="config-section-title">
                   <span>📦</span> Input & Output Setup
                 </div>
                 <div class="form-row">
-                  <label class="form-label">Schema File Path</label>
+                  <label class="form-label">Project Name</label>
+                  <input type="text" class="form-input" id="cfgProjectName" value="CRUDForge App">
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Schema File</label>
                   <input type="text" class="form-input" id="cfgInputFile" value="./gdl/example.gdl">
                 </div>
                 <div class="form-row">
                   <label class="form-label">Schema Format</label>
                   <select class="form-select" id="cfgInputType">
-                    <option value="gdl">GDL (CRUDForge native)</option>
-                    <option value="jdl">JDL (JHipster compatible)</option>
+                    <option value="gdl">GDL (native format)</option>
+                    <option value="jdl">JDL (JHipster Domain Language)</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Output Directory</label>
+                  <input type="text" class="form-input" id="cfgOutputDir" value=".">
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Module Structure</label>
+                  <select class="form-select" id="cfgOutputStructure">
+                    <option value="shared-central">shared-central (Unified shared structure)</option>
+                    <option value="entity-folder">entity-folder (Isolated feature modules)</option>
                   </select>
                 </div>
                 <div class="form-row">
@@ -1521,8 +1629,53 @@
                     <option value="skip">skip (Keep existing files)</option>
                   </select>
                 </div>
+                <div class="form-row">
+                  <label class="form-label">Git Repository URL</label>
+                  <input type="text" class="form-input" id="cfgRepoUrl" placeholder="https://github.com/org/repo.git">
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Embed Config</span>
+                    <span class="toggle-desc">Write config/crudforge.config.yml in app</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgEmbedConfig" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">AI Docs Pack</span>
+                    <span class="toggle-desc">Emit AGENT_README.md & docs/ai/*</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgAiDocs" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Developer TeamPack</span>
+                    <span class="toggle-desc">Seed .cursor, .codex & .vscode configs</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgTeamPack" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Git Integration</span>
+                    <span class="toggle-desc">Honor project.repositoryUrl on init</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgGitEnabled" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
               </div>
 
+              <!-- SECTION 2: Fuse Shell & Rendering -->
               <div class="config-section-card">
                 <div class="config-section-title">
                   <span>🚀</span> Fuse Shell & Rendering
@@ -1544,6 +1697,10 @@
                     <option value="ssr">SSR (Node Universal server rendering)</option>
                   </select>
                 </div>
+                <div class="form-row" id="ssrHostsField" style="display: none;">
+                  <label class="form-label">SSR Allowed Hosts</label>
+                  <input type="text" class="form-input" id="cfgSsrHosts" value="localhost, 127.0.0.1, admin.example.com">
+                </div>
                 <div class="toggle-row">
                   <div class="toggle-label-group">
                     <span class="toggle-title">Clean Layout</span>
@@ -1554,36 +1711,401 @@
                     <span class="slider"></span>
                   </label>
                 </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Include Prebuilt Pages</span>
+                    <span class="toggle-desc">Keep Fuse stock gallery & demo pages</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgIncludePrebuilt">
+                    <span class="slider"></span>
+                  </label>
+                </div>
                 <div class="form-row">
-                  <label class="form-label">Primary Brand Theme Color</label>
-                  <input type="text" class="form-input" id="cfgThemePrimary" value="#791EFF">
+                  <label class="form-label">Folder Typings</label>
+                  <select class="form-select" id="cfgFolderType">
+                    <option value="">default (apps)</option>
+                    <option value="microservice">microservice (Microservice architecture)</option>
+                    <option value="micro-functions">micro-functions (Serverless micro-functions)</option>
+                  </select>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Sidebar Theme</label>
+                    <select class="form-select" id="cfgSidebarTheme">
+                      <option value="white">white (Light)</option>
+                      <option value="dark">dark (Dark)</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Brand Scheme</label>
+                    <select class="form-select" id="cfgThemeScheme">
+                      <option value="system">system</option>
+                      <option value="light">light</option>
+                      <option value="dark">dark</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Primary Color</label>
+                    <div class="form-color-wrap">
+                      <input type="color" id="cfgThemePrimaryPicker" value="#791EFF">
+                      <input type="text" class="form-input" id="cfgThemePrimary" value="#791EFF" style="width: 100%;">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Error State Color</label>
+                    <div class="form-color-wrap">
+                      <input type="color" id="cfgThemeErrorPicker" value="#dc2626">
+                      <input type="text" class="form-input" id="cfgThemeError" value="#dc2626" style="width: 100%;">
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              <!-- SECTION 3: UI & Form Modes -->
               <div class="config-section-card">
                 <div class="config-section-title">
                   <span>🖥️</span> UI & Form Modes
                 </div>
-                <div class="form-row">
-                  <label class="form-label">Form Mode (New & Edit)</label>
-                  <select class="form-select" id="cfgFormMode">
-                    <option value="sidebar">sidebar (Drawer on list page)</option>
-                    <option value="page">page (Dedicated route pages)</option>
-                  </select>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">List View Mode</label>
+                    <select class="form-select" id="cfgViewMode">
+                      <option value="table">table (Data Grid)</option>
+                      <option value="card">card (Card Grid)</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Form Mode</label>
+                    <select class="form-select" id="cfgFormMode">
+                      <option value="sidebar">sidebar (Drawer)</option>
+                      <option value="page">page (Route)</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="form-row">
-                  <label class="form-label">Search Strategy</label>
-                  <select class="form-select" id="cfgSearchMode">
-                    <option value="field">field (field.contains API)</option>
-                    <option value="global">global (Full-text query API)</option>
-                  </select>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Search Strategy</label>
+                    <select class="form-select" id="cfgSearchMode">
+                      <option value="field">field (contains)</option>
+                      <option value="global">global (query)</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Card Breakpoint (px)</label>
+                    <input type="number" class="form-input" id="cfgCardBreakpoint" value="640">
+                  </div>
                 </div>
-                <div class="form-row">
-                  <label class="form-label">Responsive Card Switch (px)</label>
-                  <input type="number" class="form-input" id="cfgCardBreakpoint" value="640">
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Skeleton Loading</span>
+                    <span class="toggle-desc">Shimmer placeholder animation</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgSkeletonLoading" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Top Snackbar Position</span>
+                    <span class="toggle-desc">Toast alerts at screen top</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgSnackbarTop">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="config-section-subhead">Grid Columns by Device</div>
+                <div class="form-row--three-col">
+                  <div class="form-row">
+                    <label class="form-label">Desktop</label>
+                    <input type="number" class="form-input" id="cfgGridDesktop" value="3" min="1" max="6">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Tablet</label>
+                    <input type="number" class="form-input" id="cfgGridTablet" value="2" min="1" max="4">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Mobile</label>
+                    <input type="number" class="form-input" id="cfgGridMobile" value="1" min="1" max="2">
+                  </div>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Success Snackbar</label>
+                    <input type="text" class="form-input" id="cfgSnackbarSuccess" value="#16a34a">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Error Snackbar</label>
+                    <input type="text" class="form-input" id="cfgSnackbarError" value="#dc2626">
+                  </div>
                 </div>
               </div>
 
+              <!-- SECTION 4: Form Behavior & Fields -->
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>📝</span> Form Behaviors & Field Styling
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Auto-Uppercase Inputs</span>
+                    <span class="toggle-desc">Force all string inputs uppercase</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgUppercaseInputs">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Validation Trigger</label>
+                    <select class="form-select" id="cfgUpdateOn">
+                      <option value="change">change (Realtime)</option>
+                      <option value="blur">blur (On leave)</option>
+                      <option value="submit">submit (On save)</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">String Case Format</label>
+                    <select class="form-select" id="cfgStringCase">
+                      <option value="default">default</option>
+                      <option value="uppercase">uppercase</option>
+                      <option value="lowercase">lowercase</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Date Format</label>
+                    <input type="text" class="form-input" id="cfgDateFormat" value="medium">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Number Format</label>
+                    <input type="text" class="form-input" id="cfgNumberFormat" value="1.0-2">
+                  </div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Show Error Messages</span>
+                    <span class="toggle-desc">Render inline mat-error feedback</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgShowErrorMessages" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Auto-Focus First Field</span>
+                    <span class="toggle-desc">Focus first input when form opens</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgAutoFocusFirst" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- SECTION 5: Audit Trail Fields -->
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>🛡️</span> Audit Trail Preferences
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Audit Handling</span>
+                    <span class="toggle-desc">Auto-manage createdBy/Date fields</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgAuditEnabled" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="config-scope-grid">
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgAuditHideForms" checked> Hide in Forms
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgAuditHideFilters" checked> Hide in Filters
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgAuditHideSearch" checked> Hide in Search
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgAuditHideLists"> Hide in Lists
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgAuditShowDetail" checked> Show in Details
+                  </label>
+                </div>
+              </div>
+
+              <!-- SECTION 6: API, Dev Server & Proxy -->
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>🌐</span> API, Proxy & Dev Server
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">API Base URL</label>
+                    <input type="text" class="form-input" id="cfgApiBaseUrl" value="/api">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Microservice</label>
+                    <input type="text" class="form-input" id="cfgApiMicroservice" placeholder="e.g. auth">
+                  </div>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Endpoint Style</label>
+                    <select class="form-select" id="cfgEndpointStyle">
+                      <option value="kebab-plural">kebab-plural</option>
+                      <option value="camelCase">camelCase</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Date Library</label>
+                    <select class="form-select" id="cfgDateLib">
+                      <option value="dayjs">dayjs</option>
+                      <option value="moment">moment</option>
+                      <option value="native">native</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Response Type</label>
+                    <select class="form-select" id="cfgResponseType">
+                      <option value="http-response">http-response</option>
+                      <option value="body">body</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Proxy Config</label>
+                    <select class="form-select" id="cfgProxyWrite">
+                      <option value="both">both (prod & dev)</option>
+                      <option value="dev">dev only</option>
+                      <option value="prod">prod only</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <label class="form-label">Dev Server Port</label>
+                  <input type="number" class="form-input" id="cfgDevPort" value="4200">
+                </div>
+              </div>
+
+              <!-- SECTION 7: Code Generation Scope -->
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>⚙️</span> Code Generation Scope
+                </div>
+                <div class="config-section-subhead">Data & Routing Layer</div>
+                <div class="config-scope-grid">
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenModels" checked> Models
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenServices" checked> Services
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenFormServices" checked> Form Services
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenRoutes" checked> Routes
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenEnums" checked> Enums
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenRelationships" checked> Relationships
+                  </label>
+                </div>
+                <div class="config-section-subhead">Components & Forms</div>
+                <div class="config-scope-grid">
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenList" checked> List Table
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenCard" checked> Card View
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenDetail" checked> Detail View
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenForm" checked> Drawer Form
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenFormPage" checked> Form Page
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenValidators" checked> Validators
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenFilter" checked> Filter Drawer
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenActions" checked> Actions Menu
+                  </label>
+                </div>
+                <div class="config-section-subhead">Globals & Testing</div>
+                <div class="config-scope-grid">
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenConstants" checked> Constants
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenTests"> Smoke Tests
+                  </label>
+                  <label class="config-scope-item">
+                    <input type="checkbox" id="cfgGenSharedAssets" checked> Shared Assets
+                  </label>
+                </div>
+              </div>
+
+              <!-- SECTION 8: Mock Data Generator -->
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>🎲</span> Mock Data Generator
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Mock Data Generation</span>
+                    <span class="toggle-desc">Seed sample records for frontend testing</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgMockEnabled">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div id="mockFields" style="display: none;">
+                  <div class="form-row--two-col">
+                    <div class="form-row">
+                      <label class="form-label">Records / Entity</label>
+                      <input type="number" class="form-input" id="cfgMockRecords" value="10" min="1" max="500">
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label">String Prefix</label>
+                      <input type="text" class="form-input" id="cfgMockPrefix" value="Mock ">
+                    </div>
+                  </div>
+                  <div class="form-row--two-col">
+                    <div class="form-row">
+                      <label class="form-label">Min Number</label>
+                      <input type="number" class="form-input" id="cfgMockMin" value="1">
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label">Max Number</label>
+                      <input type="number" class="form-input" id="cfgMockMax" value="1000">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 9: Keycloak Auth & IAM -->
               <div class="config-section-card">
                 <div class="config-section-title">
                   <span>🔐</span> Keycloak Auth & IAM
@@ -1600,20 +2122,227 @@
                     <label class="form-label">Keycloak Gateway / Base URL</label>
                     <input type="text" class="form-input" id="cfgServerUrl" value="http://62.84.188.166:31740">
                   </div>
-                  <div class="form-row">
-                    <label class="form-label">Realm</label>
-                    <input type="text" class="form-input" id="cfgRealm" value="CRUD-FORDGE">
+                  <div class="form-row--two-col">
+                    <div class="form-row">
+                      <label class="form-label">Realm</label>
+                      <input type="text" class="form-input" id="cfgRealm" value="CRUD-FORDGE">
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label">Client ID</label>
+                      <input type="text" class="form-input" id="cfgClientId" value="crudforge-client-QA">
+                    </div>
+                  </div>
+                  <div class="form-row--two-col">
+                    <div class="form-row">
+                      <label class="form-label">Admin Base URL</label>
+                      <input type="text" class="form-input" id="cfgAdminBaseUrl" value="/auth">
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label">Forwarded Proto</label>
+                      <select class="form-select" id="cfgForwardedProto">
+                        <option value="">none</option>
+                        <option value="https">https (Reverse Proxy)</option>
+                      </select>
+                    </div>
                   </div>
                   <div class="toggle-row">
                     <div class="toggle-label-group">
-                      <span class="toggle-title">IAM Overlay Module</span>
-                      <span class="toggle-desc">User Management & screen ACL matrices</span>
+                      <span class="toggle-title">Mock Auth</span>
+                      <span class="toggle-desc">Offline mock authentication for QA</span>
                     </div>
                     <label class="cf-switch">
-                      <input type="checkbox" id="cfgIamEnabled" checked>
+                      <input type="checkbox" id="cfgUseMockAuth">
                       <span class="slider"></span>
                     </label>
                   </div>
+                  <div class="config-section-subhead">Sign-In Auto Prefill (QA)</div>
+                  <div class="form-row--two-col">
+                    <div class="form-row">
+                      <label class="form-label">Username</label>
+                      <input type="text" class="form-input" id="cfgLoginUser" value="crud">
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label">Password</label>
+                      <input type="password" class="form-input" id="cfgLoginPass" value="crud">
+                    </div>
+                  </div>
+                  <div class="config-section-subhead">Session & Token Management</div>
+                  <div class="form-row">
+                    <label class="form-label">Idle Timeout (ms)</label>
+                    <input type="number" class="form-input" id="cfgIdleTimeout" value="0" placeholder="0 = stay signed in">
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-label-group">
+                      <span class="toggle-title">Persist Across Reload</span>
+                      <span class="toggle-desc">Preserve token on browser refresh</span>
+                    </div>
+                    <label class="cf-switch">
+                      <input type="checkbox" id="cfgSessionPersist" checked>
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-label-group">
+                      <span class="toggle-title">Cross-Tab Signout</span>
+                      <span class="toggle-desc">Sync logout event across all tabs</span>
+                    </div>
+                    <label class="cf-switch">
+                      <input type="checkbox" id="cfgCrossTabSync" checked>
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-label-group">
+                      <span class="toggle-title">Refresh on Window Focus</span>
+                      <span class="toggle-desc">Probe token validity when focusing tab</span>
+                    </div>
+                    <label class="cf-switch">
+                      <input type="checkbox" id="cfgRefreshFocus" checked>
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="config-section-subhead">Disabled Account Guard</div>
+                  <div class="toggle-row">
+                    <div class="toggle-label-group">
+                      <span class="toggle-title">Disabled Account Overlay</span>
+                      <span class="toggle-desc">Freeze UI and countdown to logout</span>
+                    </div>
+                    <label class="cf-switch">
+                      <input type="checkbox" id="cfgDisabledGuard">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Countdown Seconds</label>
+                    <input type="number" class="form-input" id="cfgDisabledCountdown" value="20">
+                  </div>
+                  <div class="config-section-subhead">Keycloak Bootstrap Provisioning</div>
+                  <div class="toggle-row">
+                    <div class="toggle-label-group">
+                      <span class="toggle-title">Enable Provisioning</span>
+                      <span class="toggle-desc">Used by `crudforge bootstrap`</span>
+                    </div>
+                    <label class="cf-switch">
+                      <input type="checkbox" id="cfgProvisionEnabled">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="form-row--two-col">
+                    <div class="form-row">
+                      <label class="form-label">Adapter</label>
+                      <select class="form-select" id="cfgProvisionAdapter">
+                        <option value="admin-service">admin-service</option>
+                        <option value="keycloak-admin-rest">keycloak-admin-rest</option>
+                      </select>
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label">Admin Gateway URL</label>
+                      <input type="text" class="form-input" id="cfgAdminServiceUrl" value="http://62.84.188.166:31740/">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 10: IAM Security Overlay -->
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>👥</span> IAM Security Overlay
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">IAM Overlay Module</span>
+                    <span class="toggle-desc">User Management & screen ACL matrices</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgIamEnabled">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div id="iamFields" style="display: none;">
+                  <div class="config-scope-grid">
+                    <label class="config-scope-item">
+                      <input type="checkbox" id="cfgIamUsers" checked> Users Module
+                    </label>
+                    <label class="config-scope-item">
+                      <input type="checkbox" id="cfgIamRoles" checked> Roles Module
+                    </label>
+                    <label class="config-scope-item">
+                      <input type="checkbox" id="cfgIamRolePerms" checked> Role Perms Matrix
+                    </label>
+                    <label class="config-scope-item">
+                      <input type="checkbox" id="cfgIamUserAccess" checked> User-Role Access
+                    </label>
+                    <label class="config-scope-item">
+                      <input type="checkbox" id="cfgIamUserPerms" checked> User Perms Matrix
+                    </label>
+                    <label class="config-scope-item">
+                      <input type="checkbox" id="cfgIamInheritance" checked> Role Hierarchy
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 11: Naming Conventions, Backend & QA -->
+              <div class="config-section-card">
+                <div class="config-section-title">
+                  <span>🏷️</span> Conventions, Backend & QA
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Model Interface Prefix</label>
+                    <input type="text" class="form-input" id="cfgModelPrefix" value="I">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Enum Value Casing</label>
+                    <select class="form-select" id="cfgEnumCasing">
+                      <option value="uppercase">uppercase</option>
+                      <option value="lowercase">lowercase</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Entity Prefix</label>
+                    <input type="text" class="form-input" id="cfgEntityPrefix" placeholder="e.g. Base">
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Entity Suffix</label>
+                    <input type="text" class="form-input" id="cfgEntitySuffix" placeholder="e.g. Entity">
+                  </div>
+                </div>
+                <div class="form-row--two-col">
+                  <div class="form-row">
+                    <label class="form-label">Backend Kind</label>
+                    <select class="form-select" id="cfgBackendKind">
+                      <option value="custom">custom</option>
+                      <option value="go-duck">go-duck</option>
+                      <option value="jhipster">jhipster</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <label class="form-label">Doctor Timeout (ms)</label>
+                    <input type="number" class="form-input" id="cfgDoctorTimeout" value="3000">
+                  </div>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">Kebab-Case Files</span>
+                    <span class="toggle-desc">Lowercase dash-separated filenames</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgKebabFiles" checked>
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-label-group">
+                    <span class="toggle-title">CI Pipeline Setup</span>
+                    <span class="toggle-desc">Generate GitHub Actions workflow</span>
+                  </div>
+                  <label class="cf-switch">
+                    <input type="checkbox" id="cfgTestingCi">
+                    <span class="slider"></span>
+                  </label>
                 </div>
               </div>
 
@@ -1660,6 +2389,7 @@
                 <button class="term-action-chip" id="chipInit">init</button>
                 <button class="term-action-chip" id="chipGenerate">generate</button>
                 <button class="term-action-chip" id="chipValidate">validate</button>
+                <button class="term-action-chip" id="chipBootstrap">bootstrap</button>
                 <button class="term-action-chip" id="chipDev">npm run dev</button>
                 <button class="term-action-chip" id="chipTree">tree</button>
                 <button class="term-action-chip" id="chipClear">clear</button>
@@ -2810,31 +3540,42 @@ Commands:
 <span class="ansi-dim">Edit \`config/crudforge.config.yml\` & \`gdl/example.gdl\`, then run \`crudforge generate\`.</span>
 `);
         } else if (sub === 'generate') {
+          const isKc = cfgAuthProvider.value === 'keycloak';
+          const isMock = cfgMockEnabled.checked;
+          const isIam = cfgIamEnabled.checked;
           appendTermLine(`
 <span class="ansi-cyan">ℹ Found project configuration: config/crudforge.config.yml</span>
-<span class="ansi-cyan">ℹ Discovered schema: ./gdl/example.gdl (5 entities, 1 enum)</span>
-<span class="ansi-green">✓</span> Validated domain model blueprint
-<span class="ansi-green">✓</span> Scaffolding Fuse Angular shell (<span class="ansi-yellow">${cfgRendering.value.toUpperCase()}</span>)
-<span class="ansi-green">✓</span> Generated components: list, card, form, detail, filter
-<span class="ansi-green">✓</span> Generated services & routes for Book, Author, Publisher
-<span class="ansi-green">✓</span> Seeded AGENT_README.md and docs/ai/* orientation packs
-<span class="ansi-green ansi-bold">✓ Generation complete in 684ms!</span> Run <span class="ansi-yellow">npm install && npm run dev</span>.
+<span class="ansi-cyan">ℹ Discovered schema: ${escapeHtml(cfgInputFile.value)}</span>
+<span class="ansi-green">✓</span> Validated domain model blueprint (format: ${cfgInputType.value.toUpperCase()})
+<span class="ansi-green">✓</span> Scaffolding Fuse Angular shell (<span class="ansi-yellow">${cfgRendering.value.toUpperCase()}</span>, cleanLayout: ${cfgCleanLayout.checked})
+<span class="ansi-green">✓</span> Module layout: <span class="ansi-purple">${cfgOutputStructure.value}</span> (conflict policy: ${cfgOverwritePolicy.value})
+<span class="ansi-green">✓</span> Emitted components: ${cfgGenList.checked ? 'list ' : ''}${cfgGenCard.checked ? 'card ' : ''}${cfgGenDetail.checked ? 'detail ' : ''}${cfgGenForm.checked ? 'form ' : ''}${cfgGenFilter.checked ? 'filter' : ''}
+<span class="ansi-green">✓</span> Emitted services & routes (endpointStyle: ${cfgEndpointStyle.value}, dateLib: ${cfgDateLib.value})
+${isMock ? `<span class="ansi-green">✓</span> Seeded mock dataset: ${cfgMockRecords.value} records/entity (prefix: '${escapeHtml(cfgMockPrefix.value)}')\n` : ''}${isKc ? `<span class="ansi-green">✓</span> Injected Keycloak OIDC client (${escapeHtml(cfgRealm.value)} / ${escapeHtml(cfgClientId.value)})\n` : ''}${isIam ? `<span class="ansi-green">✓</span> Scaffolding IAM Security Module (users, roles, permission matrices)\n` : ''}${cfgTeamPack.checked ? `<span class="ansi-green">✓</span> Seeded .cursor/agents, .codex/agents & .vscode configs\n` : ''}${cfgAiDocs.checked ? `<span class="ansi-green">✓</span> Seeded root AGENT_README.md and docs/ai/* orientation packs\n` : ''}<span class="ansi-green ansi-bold">✓ Generation complete in 684ms!</span> Run <span class="ansi-yellow">npm install && npm run dev</span>.
 `);
         } else if (sub === 'validate') {
           appendTermLine(`
 <span class="ansi-dim">Validating schema syntax against CRUDForge generation rules...</span>
 <span class="ansi-green ansi-bold">✓ Schema validation successful!</span> (0 errors, 0 warnings)
-<span class="ansi-cyan">Entities:</span> Region, Country, Location, Department, Task, Employee, Job
+<span class="ansi-cyan">Schema target:</span> ${escapeHtml(cfgInputFile.value)} (${cfgInputType.value.toUpperCase()})
 `);
         } else if (sub === 'bootstrap') {
-          appendTermLine(`
-<span class="ansi-dim">Connecting to Keycloak Admin Service gateway (http://62.84.188.166:31740)...</span>
+          if (cfgAuthProvider.value === 'keycloak') {
+            appendTermLine(`
+<span class="ansi-dim">Connecting to Keycloak Admin gateway (${escapeHtml(cfgServerUrl.value)})...</span>
 <span class="ansi-green">✓</span> Authenticated admin operator (KEYCLOAK_ADMIN_USERNAME)
-<span class="ansi-green">✓</span> Realm CRUD-FORDGE verified
-<span class="ansi-green">✓</span> Client crudforge-client-QA configured with public OIDC PKCE flow
+<span class="ansi-green">✓</span> Realm ${escapeHtml(cfgRealm.value)} verified
+<span class="ansi-green">✓</span> Client ${escapeHtml(cfgClientId.value)} configured with public OIDC PKCE flow
+<span class="ansi-green">✓</span> Provision adapter active: <span class="ansi-purple">${escapeHtml(cfgProvisionAdapter.value)}</span>
 <span class="ansi-green">✓</span> Seeded default roles: ROLE_ADMIN, ROLE_USER
-<span class="ansi-green">✓ Bootstrap completed successfully.</span>
+<span class="ansi-green ansi-bold">✓ Bootstrap completed successfully.</span>
 `);
+          } else {
+            appendTermLine(`
+<span class="ansi-yellow">⚠ Keycloak auth is currently disabled (provider: 'none').</span>
+<span class="ansi-dim">Set auth.provider: keycloak in config to bootstrap Keycloak realms and clients.</span>
+`);
+          }
         } else {
           appendTermLine(`<span class="ansi-red">crudforge: unknown command '${sub}'.</span> Type 'crudforge --help'.`);
         }
@@ -2842,15 +3583,15 @@ Commands:
         const sub = parts[1];
         if (sub === 'run' && parts[2] === 'dev' || sub === 'start') {
           appendTermLine(`
-<span class="ansi-dim">> my-app@1.0.0 dev</span>
-<span class="ansi-dim">> ng serve --port ${cfgCardBreakpoint ? '4200' : '4200'}</span>
+<span class="ansi-dim">> ${escapeHtml(cfgProjectName.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}@1.0.0 dev</span>
+<span class="ansi-dim">> ng serve --port ${cfgDevPort.value || 4200}</span>
 
 <span class="ansi-cyan">Initial Chunk Files | Names | Raw Size</span>
 <span class="ansi-dim">polyfills.js        | polyfills        | 84.22 kB |</span>
 <span class="ansi-dim">main.js             | main             | 1.42 MB  |</span>
 <span class="ansi-dim">styles.css          | styles           | 194.50 kB |</span>
 
-<span class="ansi-green ansi-bold">✔ Angular Live Development Server is listening on http://localhost:4200/</span>
+<span class="ansi-green ansi-bold">✔ Angular Live Development Server is listening on http://localhost:${cfgDevPort.value || 4200}/</span>
 <span class="ansi-cyan">✔ Compiled successfully.</span>
 `);
         } else if (sub === 'test') {
@@ -2959,6 +3700,10 @@ nothing to commit, working tree clean
       executeTerminalCommand('crudforge validate ./gdl/example.gdl');
     });
 
+    document.getElementById('chipBootstrap')?.addEventListener('click', () => {
+      executeTerminalCommand('crudforge bootstrap');
+    });
+
     document.getElementById('chipDev').addEventListener('click', () => {
       executeTerminalCommand('npm run dev');
     });
@@ -2978,25 +3723,145 @@ nothing to commit, working tree clean
     });
 
     // =========================================================================
-    // CONFIG & LIVE YAML CONTROLS
+    // CONFIG & LIVE YAML CONTROLS (ALL CRUDFORGE FEATURES)
     // =========================================================================
+    // Section 1: Input & Output
+    const cfgProjectName = document.getElementById('cfgProjectName');
     const cfgInputFile = document.getElementById('cfgInputFile');
     const cfgInputType = document.getElementById('cfgInputType');
+    const cfgOutputDir = document.getElementById('cfgOutputDir');
+    const cfgOutputStructure = document.getElementById('cfgOutputStructure');
     const cfgOverwritePolicy = document.getElementById('cfgOverwritePolicy');
+    const cfgRepoUrl = document.getElementById('cfgRepoUrl');
+    const cfgEmbedConfig = document.getElementById('cfgEmbedConfig');
+    const cfgAiDocs = document.getElementById('cfgAiDocs');
+    const cfgTeamPack = document.getElementById('cfgTeamPack');
+    const cfgGitEnabled = document.getElementById('cfgGitEnabled');
+
+    // Section 2: Fuse Shell & Rendering
     const cfgFuseEnabled = document.getElementById('cfgFuseEnabled');
     const cfgRendering = document.getElementById('cfgRendering');
+    const cfgSsrHosts = document.getElementById('cfgSsrHosts');
+    const ssrHostsField = document.getElementById('ssrHostsField');
     const cfgCleanLayout = document.getElementById('cfgCleanLayout');
+    const cfgIncludePrebuilt = document.getElementById('cfgIncludePrebuilt');
+    const cfgFolderType = document.getElementById('cfgFolderType');
+    const cfgSidebarTheme = document.getElementById('cfgSidebarTheme');
+    const cfgThemeScheme = document.getElementById('cfgThemeScheme');
     const cfgThemePrimary = document.getElementById('cfgThemePrimary');
+    const cfgThemePrimaryPicker = document.getElementById('cfgThemePrimaryPicker');
+    const cfgThemeError = document.getElementById('cfgThemeError');
+    const cfgThemeErrorPicker = document.getElementById('cfgThemeErrorPicker');
+
+    // Section 3: UI & Form Modes
+    const cfgViewMode = document.getElementById('cfgViewMode');
     const cfgFormMode = document.getElementById('cfgFormMode');
     const cfgSearchMode = document.getElementById('cfgSearchMode');
     const cfgCardBreakpoint = document.getElementById('cfgCardBreakpoint');
+    const cfgSkeletonLoading = document.getElementById('cfgSkeletonLoading');
+    const cfgSnackbarTop = document.getElementById('cfgSnackbarTop');
+    const cfgGridDesktop = document.getElementById('cfgGridDesktop');
+    const cfgGridTablet = document.getElementById('cfgGridTablet');
+    const cfgGridMobile = document.getElementById('cfgGridMobile');
+    const cfgSnackbarSuccess = document.getElementById('cfgSnackbarSuccess');
+    const cfgSnackbarError = document.getElementById('cfgSnackbarError');
+
+    // Section 4: Form Behaviors & Field Conventions
+    const cfgUppercaseInputs = document.getElementById('cfgUppercaseInputs');
+    const cfgUpdateOn = document.getElementById('cfgUpdateOn');
+    const cfgStringCase = document.getElementById('cfgStringCase');
+    const cfgDateFormat = document.getElementById('cfgDateFormat');
+    const cfgNumberFormat = document.getElementById('cfgNumberFormat');
+    const cfgShowErrorMessages = document.getElementById('cfgShowErrorMessages');
+    const cfgAutoFocusFirst = document.getElementById('cfgAutoFocusFirst');
+
+    // Section 5: Audit Trail Fields
+    const cfgAuditEnabled = document.getElementById('cfgAuditEnabled');
+    const cfgAuditHideForms = document.getElementById('cfgAuditHideForms');
+    const cfgAuditHideFilters = document.getElementById('cfgAuditHideFilters');
+    const cfgAuditHideSearch = document.getElementById('cfgAuditHideSearch');
+    const cfgAuditHideLists = document.getElementById('cfgAuditHideLists');
+    const cfgAuditShowDetail = document.getElementById('cfgAuditShowDetail');
+
+    // Section 6: API, Dev Server & Proxy
+    const cfgApiBaseUrl = document.getElementById('cfgApiBaseUrl');
+    const cfgApiMicroservice = document.getElementById('cfgApiMicroservice');
+    const cfgEndpointStyle = document.getElementById('cfgEndpointStyle');
+    const cfgDateLib = document.getElementById('cfgDateLib');
+    const cfgResponseType = document.getElementById('cfgResponseType');
+    const cfgProxyWrite = document.getElementById('cfgProxyWrite');
+    const cfgDevPort = document.getElementById('cfgDevPort');
+
+    // Section 7: Code Generation Scope
+    const cfgGenModels = document.getElementById('cfgGenModels');
+    const cfgGenServices = document.getElementById('cfgGenServices');
+    const cfgGenFormServices = document.getElementById('cfgGenFormServices');
+    const cfgGenRoutes = document.getElementById('cfgGenRoutes');
+    const cfgGenEnums = document.getElementById('cfgGenEnums');
+    const cfgGenRelationships = document.getElementById('cfgGenRelationships');
+    const cfgGenList = document.getElementById('cfgGenList');
+    const cfgGenCard = document.getElementById('cfgGenCard');
+    const cfgGenDetail = document.getElementById('cfgGenDetail');
+    const cfgGenForm = document.getElementById('cfgGenForm');
+    const cfgGenFormPage = document.getElementById('cfgGenFormPage');
+    const cfgGenValidators = document.getElementById('cfgGenValidators');
+    const cfgGenFilter = document.getElementById('cfgGenFilter');
+    const cfgGenActions = document.getElementById('cfgGenActions');
+    const cfgGenConstants = document.getElementById('cfgGenConstants');
+    const cfgGenTests = document.getElementById('cfgGenTests');
+    const cfgGenSharedAssets = document.getElementById('cfgGenSharedAssets');
+
+    // Section 8: Mock Data Generator
+    const cfgMockEnabled = document.getElementById('cfgMockEnabled');
+    const mockFields = document.getElementById('mockFields');
+    const cfgMockRecords = document.getElementById('cfgMockRecords');
+    const cfgMockPrefix = document.getElementById('cfgMockPrefix');
+    const cfgMockMin = document.getElementById('cfgMockMin');
+    const cfgMockMax = document.getElementById('cfgMockMax');
+
+    // Section 9: Keycloak Auth & Session Management
     const cfgAuthProvider = document.getElementById('cfgAuthProvider');
+    const keycloakFields = document.getElementById('keycloakFields');
     const cfgServerUrl = document.getElementById('cfgServerUrl');
     const cfgRealm = document.getElementById('cfgRealm');
-    const cfgIamEnabled = document.getElementById('cfgIamEnabled');
-    const keycloakFields = document.getElementById('keycloakFields');
-    const configPresetSelect = document.getElementById('configPresetSelect');
+    const cfgClientId = document.getElementById('cfgClientId');
+    const cfgAdminBaseUrl = document.getElementById('cfgAdminBaseUrl');
+    const cfgForwardedProto = document.getElementById('cfgForwardedProto');
+    const cfgUseMockAuth = document.getElementById('cfgUseMockAuth');
+    const cfgLoginUser = document.getElementById('cfgLoginUser');
+    const cfgLoginPass = document.getElementById('cfgLoginPass');
+    const cfgIdleTimeout = document.getElementById('cfgIdleTimeout');
+    const cfgSessionPersist = document.getElementById('cfgSessionPersist');
+    const cfgCrossTabSync = document.getElementById('cfgCrossTabSync');
+    const cfgRefreshFocus = document.getElementById('cfgRefreshFocus');
+    const cfgDisabledGuard = document.getElementById('cfgDisabledGuard');
+    const cfgDisabledCountdown = document.getElementById('cfgDisabledCountdown');
+    const cfgProvisionEnabled = document.getElementById('cfgProvisionEnabled');
+    const cfgProvisionAdapter = document.getElementById('cfgProvisionAdapter');
+    const cfgAdminServiceUrl = document.getElementById('cfgAdminServiceUrl');
 
+    // Section 10: IAM Security Overlay
+    const cfgIamEnabled = document.getElementById('cfgIamEnabled');
+    const iamFields = document.getElementById('iamFields');
+    const cfgIamUsers = document.getElementById('cfgIamUsers');
+    const cfgIamRoles = document.getElementById('cfgIamRoles');
+    const cfgIamRolePerms = document.getElementById('cfgIamRolePerms');
+    const cfgIamUserAccess = document.getElementById('cfgIamUserAccess');
+    const cfgIamUserPerms = document.getElementById('cfgIamUserPerms');
+    const cfgIamInheritance = document.getElementById('cfgIamInheritance');
+
+    // Section 11: Naming Conventions, Backend & QA
+    const cfgModelPrefix = document.getElementById('cfgModelPrefix');
+    const cfgEntityPrefix = document.getElementById('cfgEntityPrefix');
+    const cfgEntitySuffix = document.getElementById('cfgEntitySuffix');
+    const cfgEnumCasing = document.getElementById('cfgEnumCasing');
+    const cfgBackendKind = document.getElementById('cfgBackendKind');
+    const cfgDoctorTimeout = document.getElementById('cfgDoctorTimeout');
+    const cfgKebabFiles = document.getElementById('cfgKebabFiles');
+    const cfgTestingCi = document.getElementById('cfgTestingCi');
+
+    // Preset & UI Panels
+    const configPresetSelect = document.getElementById('configPresetSelect');
     const configYamlEditor = document.getElementById('configYamlEditor');
     const yamlGutter = document.getElementById('yamlGutter');
     const yamlLineCount = document.getElementById('yamlLineCount');
@@ -3021,95 +3886,255 @@ nothing to commit, working tree clean
       });
     });
 
+    function syncConditionalDisplays() {
+      if (keycloakFields) keycloakFields.style.display = cfgAuthProvider.value === 'keycloak' ? 'block' : 'none';
+      if (iamFields) iamFields.style.display = cfgIamEnabled.checked ? 'block' : 'none';
+      if (mockFields) mockFields.style.display = cfgMockEnabled.checked ? 'block' : 'none';
+      if (ssrHostsField) ssrHostsField.style.display = cfgRendering.value === 'ssr' ? 'block' : 'none';
+    }
+
+    // Color Pickers sync
+    cfgThemePrimaryPicker?.addEventListener('input', () => {
+      cfgThemePrimary.value = cfgThemePrimaryPicker.value;
+      updateConfigYamlFromForm();
+    });
+    cfgThemePrimary?.addEventListener('input', () => {
+      if (/^#[0-9A-Fa-f]{6}$/.test(cfgThemePrimary.value)) {
+        cfgThemePrimaryPicker.value = cfgThemePrimary.value;
+      }
+    });
+    cfgThemeErrorPicker?.addEventListener('input', () => {
+      cfgThemeError.value = cfgThemeErrorPicker.value;
+      updateConfigYamlFromForm();
+    });
+    cfgThemeError?.addEventListener('input', () => {
+      if (/^#[0-9A-Fa-f]{6}$/.test(cfgThemeError.value)) {
+        cfgThemeErrorPicker.value = cfgThemeError.value;
+      }
+    });
+
     function generateConfigYamlText() {
-      const isKeycloak = cfgAuthProvider.value === 'keycloak';
-      
+      const isKeycloak = cfgAuthProvider?.value === 'keycloak';
+      const isSsr = cfgRendering?.value === 'ssr';
+      const isMock = !!cfgMockEnabled?.checked;
+      const isIam = !!cfgIamEnabled?.checked;
+
       let yaml = `# =============================================================================
 # CRUDForge Project Configuration
 # Automatically discovered by \`crudforge generate\`
 # =============================================================================
 
+project:
+  name: "${cfgProjectName?.value || 'CRUDForge App'}"
+  description: "Angular Material CRUD generated by CRUDForge"
+  repositoryUrl: "${cfgRepoUrl?.value || ''}"
+
 input:
-  file: ${cfgInputFile.value}
-  type: ${cfgInputType.value}
+  file: ${cfgInputFile?.value || './gdl/example.gdl'}
+  type: ${cfgInputType?.value || 'gdl'}
 
 output:
-  directory: .
-  overwritePolicy: ${cfgOverwritePolicy.value}
-  structure: shared-central
-  embedConfig: true
+  directory: "${cfgOutputDir?.value || '.'}"
+  overwritePolicy: ${cfgOverwritePolicy?.value || 'fail'}
+  structure: ${cfgOutputStructure?.value || 'shared-central'}
+  embedConfig: ${!!cfgEmbedConfig?.checked}
   aiDocs:
-    enabled: true
+    enabled: ${!!cfgAiDocs?.checked}
   teamPack:
-    enabled: true
+    enabled: ${!!cfgTeamPack?.checked}
+    cursorAgents: true
+    codexAgents: true
+    vscodeExtensions: true
+
+git:
+  enabled: ${!!cfgGitEnabled?.checked}
 
 fuse:
-  enabled: ${cfgFuseEnabled.checked}
-  rendering: ${cfgRendering.value}`;
+  enabled: ${!!cfgFuseEnabled?.checked}
+  rendering: ${cfgRendering?.value || 'spa'}`;
 
-      if (cfgRendering.value === 'ssr') {
-        yaml += `
-  ssrAllowedHosts:
-    - localhost
-    - 127.0.0.1
-    - admin.example.com`;
+      if (isSsr) {
+        const hosts = (cfgSsrHosts?.value || 'localhost, 127.0.0.1, admin.example.com')
+          .split(',')
+          .map(h => h.trim())
+          .filter(Boolean);
+        yaml += `\n  ssrAllowedHosts:\n` + hosts.map(h => `    - ${h}`).join('\n');
       }
 
       yaml += `
-  cleanLayout: ${cfgCleanLayout.checked}
-  includePrebuilt: false
+  cleanLayout: ${!!cfgCleanLayout?.checked}
+  includePrebuilt: ${!!cfgIncludePrebuilt?.checked}
+  folderType: "${cfgFolderType?.value || ''}"
+  sidebarTheme: ${cfgSidebarTheme?.value || 'white'}
   theme:
-    scheme: system
-    primary: "${cfgThemePrimary.value}"
-    error: "#dc2626"
+    scheme: ${cfgThemeScheme?.value || 'system'}
+    primary: "${cfgThemePrimary?.value || '#791EFF'}"
+    error: "${cfgThemeError?.value || '#dc2626'}"
 
 ui:
-  viewMode: table
-  formMode: ${cfgFormMode.value}
-  searchMode: ${cfgSearchMode.value}
-  cardBreakpointPx: ${cfgCardBreakpoint.value}
+  framework: material
+  viewMode: ${cfgViewMode?.value || 'table'}
+  formMode: ${cfgFormMode?.value || 'sidebar'}
+  searchMode: ${cfgSearchMode?.value || 'field'}
+  cardBreakpointPx: ${parseInt(cfgCardBreakpoint?.value, 10) || 640}
+  useSkeletonLoading: ${!!cfgSkeletonLoading?.checked}
+  snackbarPositionTop: ${!!cfgSnackbarTop?.checked}
   gridCols:
-    mobile: 1
-    tablet: 2
-    desktop: 3
+    mobile: ${parseInt(cfgGridMobile?.value, 10) || 1}
+    tablet: ${parseInt(cfgGridTablet?.value, 10) || 2}
+    desktop: ${parseInt(cfgGridDesktop?.value, 10) || 3}
+  styling:
+    snackbarSuccessColor: "${cfgSnackbarSuccess?.value || '#16a34a'}"
+    snackbarErrorColor: "${cfgSnackbarError?.value || '#dc2626'}"
+
+formBehavior:
+  uppercaseInputs: ${!!cfgUppercaseInputs?.checked}
+  updateOn: ${cfgUpdateOn?.value || 'change'}
+  showErrorMessages: ${!!cfgShowErrorMessages?.checked}
+  autoFocusFirstInput: ${!!cfgAutoFocusFirst?.checked}
 
 fields:
   audit:
-    hideInForms: true
-    hideInFilters: true
-    hideInSearch: true
-    hideInLists: false
+    enabled: ${!!cfgAuditEnabled?.checked}
+    hideInForms: ${!!cfgAuditHideForms?.checked}
+    hideInFilters: ${!!cfgAuditHideFilters?.checked}
+    hideInSearch: ${!!cfgAuditHideSearch?.checked}
+    hideInLists: ${!!cfgAuditHideLists?.checked}
+    showInDetail: ${!!cfgAuditShowDetail?.checked}
+    names:
+      - createdBy
+      - createdDate
+      - lastModifiedBy
+      - lastModifiedDate
+  formatting:
+    dateMediumFormat: "${cfgDateFormat?.value || 'medium'}"
+    numberFormat: "${cfgNumberFormat?.value || '1.0-2'}"
+    stringCase: ${cfgStringCase?.value || 'lower'}
+
+api:
+  baseUrl: "${cfgApiBaseUrl?.value || '/api'}"
+  microservice: "${cfgApiMicroservice?.value || ''}"
+  endpointStyle: ${cfgEndpointStyle?.value || 'kebab-plural'}
+  dateLibrary: ${cfgDateLib?.value || 'dayjs'}
+  responseType: ${cfgResponseType?.value || 'http-response'}
+  services: {}
+
+proxy:
+  write: ${cfgProxyWrite?.value || 'both'}
+
+devServer:
+  port: ${parseInt(cfgDevPort?.value, 10) || 4200}
+
+generate:
+  models: ${!!cfgGenModels?.checked}
+  services: ${!!cfgGenServices?.checked}
+  formServices: ${!!cfgGenFormServices?.checked}
+  routes: ${!!cfgGenRoutes?.checked}
+  enums: ${!!cfgGenEnums?.checked}
+  relationships: ${!!cfgGenRelationships?.checked}
+  components:
+    list: ${!!cfgGenList?.checked}
+    card: ${!!cfgGenCard?.checked}
+    detail: ${!!cfgGenDetail?.checked}
+  forms:
+    form: ${!!cfgGenForm?.checked}
+    formPage: ${!!cfgGenFormPage?.checked}
+    update: true
+    validators: ${!!cfgGenValidators?.checked}
+    mappers: true
+  interaction:
+    actions: ${!!cfgGenActions?.checked}
+    filter: ${!!cfgGenFilter?.checked}
+  globals:
+    constants: ${!!cfgGenConstants?.checked}
+    tests: ${!!cfgGenTests?.checked}
+    sharedAssets: ${!!cfgGenSharedAssets?.checked}
+  registrations:
+    navigation: true
+    routes: true
+
+mock:
+  enabled: ${isMock}
+  recordsPerEntity: ${parseInt(cfgMockRecords?.value, 10) || 10}
+  values:
+    stringPrefix: "${cfgMockPrefix?.value || 'Mock '}"
+    numberMin: ${parseInt(cfgMockMin?.value, 10) || 1}
+    numberMax: ${parseInt(cfgMockMax?.value, 10) || 1000}
+    booleanDefault: true
 
 auth:
-  provider: ${cfgAuthProvider.value}`;
+  provider: ${cfgAuthProvider?.value || 'none'}`;
 
       if (isKeycloak) {
         yaml += `
-  serverUrl: ${cfgServerUrl.value}
-  realm: ${cfgRealm.value}
-  clientId: crudforge-client-QA
-  useMockAuth: false
+  serverUrl: "${cfgServerUrl?.value || 'http://localhost:8080'}"
+  realm: "${cfgRealm?.value || 'master'}"
+  clientId: "${cfgClientId?.value || 'crudforge-client'}"
+  adminBaseUrl: "${cfgAdminBaseUrl?.value || '/auth'}"
+  useMockAuth: ${!!cfgUseMockAuth?.checked}
+  forwardedProto: "${cfgForwardedProto?.value || 'http'}"
   signInPrefill:
-    username: crud
-    password: crud
+    username: "${cfgLoginUser?.value || 'crud'}"
+    password: "${cfgLoginPass?.value || 'crud'}"
+  adminRoles:
+    - ROLE_ADMIN
+    - ADMIN
+    - ROLE_SUPER_ADMIN
   session:
-    idleTimeoutMs: 0
-    persistAcrossReload: true
-    crossTabSync: true
-    refreshOnFocus: true
-
-iam:
-  enabled: ${cfgIamEnabled.checked}
-  roles: true
-  rolePermissions: true
-  userAccess: true
-  userPermissions: true`;
-      } else {
-        yaml += `
-
-iam:
-  enabled: false`;
+    idleTimeoutMs: ${parseInt(cfgIdleTimeout?.value, 10) || 0}
+    persistAcrossReload: ${!!cfgSessionPersist?.checked}
+    crossTabSync: ${!!cfgCrossTabSync?.checked}
+    refreshOnFocus: ${!!cfgRefreshFocus?.checked}
+    statusProbeIntervalMs: 60000
+  disabledAccount:
+    enabled: ${!!cfgDisabledGuard?.checked}
+    countdownSeconds: ${parseInt(cfgDisabledCountdown?.value, 10) || 20}
+    message: "Your account has been disabled. Please contact your administrator."
+  provision:
+    enabled: ${!!cfgProvisionEnabled?.checked}
+    adapter: ${cfgProvisionAdapter?.value || 'direct'}
+    adminServiceUrl: "${cfgAdminServiceUrl?.value || 'http://localhost:8080'}"
+    adminUsernameEnv: KEYCLOAK_ADMIN_USERNAME
+    adminPasswordEnv: KEYCLOAK_ADMIN_PASSWORD
+    tokenClientId: admin-cli`;
       }
+
+      yaml += `
+
+iam:
+  enabled: ${isIam}`;
+
+      if (isIam) {
+        yaml += `
+  users: ${!!cfgIamUsers?.checked}
+  roles: ${!!cfgIamRoles?.checked}
+  rolePermissions: ${!!cfgIamRolePerms?.checked}
+  userAccess: ${!!cfgIamUserAccess?.checked}
+  userPermissions: ${!!cfgIamUserPerms?.checked}
+  inheritance: ${!!cfgIamInheritance?.checked}
+  screens: []`;
+      }
+
+      yaml += `
+
+namingConventions:
+  entityPrefix: "${cfgEntityPrefix?.value || ''}"
+  entitySuffix: "${cfgEntitySuffix?.value || ''}"
+  modelInterfacePrefix: "${cfgModelPrefix?.value || 'I'}"
+  kebabCaseFiles: ${!!cfgKebabFiles?.checked}
+  enumValueCasing: ${cfgEnumCasing?.value || 'uppercase'}
+
+backend:
+  kind: ${cfgBackendKind?.value || 'spring-boot'}
+
+testing:
+  ci: ${!!cfgTestingCi?.checked}
+  fixtures: {}
+
+doctor:
+  timeoutMs: ${parseInt(cfgDoctorTimeout?.value, 10) || 3000}
+  endpoints: []
+`;
 
       return yaml;
     }
@@ -3134,28 +4159,41 @@ iam:
     }
 
     // Two-way sync: Form -> YAML
-    [cfgInputFile, cfgInputType, cfgOverwritePolicy, cfgFuseEnabled, cfgRendering, cfgCleanLayout,
-     cfgThemePrimary, cfgFormMode, cfgSearchMode, cfgCardBreakpoint, cfgAuthProvider, cfgServerUrl,
-     cfgRealm, cfgIamEnabled].forEach(el => {
+    const allConfigInputs = [
+      cfgProjectName, cfgInputFile, cfgInputType, cfgOutputDir, cfgOutputStructure, cfgOverwritePolicy, cfgRepoUrl,
+      cfgEmbedConfig, cfgAiDocs, cfgTeamPack, cfgGitEnabled,
+      cfgFuseEnabled, cfgRendering, cfgSsrHosts, cfgCleanLayout, cfgIncludePrebuilt, cfgFolderType, cfgSidebarTheme,
+      cfgThemeScheme, cfgThemePrimary, cfgThemeError,
+      cfgViewMode, cfgFormMode, cfgSearchMode, cfgCardBreakpoint, cfgSkeletonLoading, cfgSnackbarTop,
+      cfgGridDesktop, cfgGridTablet, cfgGridMobile, cfgSnackbarSuccess, cfgSnackbarError,
+      cfgUppercaseInputs, cfgUpdateOn, cfgStringCase, cfgDateFormat, cfgNumberFormat, cfgShowErrorMessages, cfgAutoFocusFirst,
+      cfgAuditEnabled, cfgAuditHideForms, cfgAuditHideFilters, cfgAuditHideSearch, cfgAuditHideLists, cfgAuditShowDetail,
+      cfgApiBaseUrl, cfgApiMicroservice, cfgEndpointStyle, cfgDateLib, cfgResponseType, cfgProxyWrite, cfgDevPort,
+      cfgGenModels, cfgGenServices, cfgGenFormServices, cfgGenRoutes, cfgGenEnums, cfgGenRelationships,
+      cfgGenList, cfgGenCard, cfgGenDetail, cfgGenForm, cfgGenFormPage, cfgGenValidators, cfgGenFilter, cfgGenActions,
+      cfgGenConstants, cfgGenTests, cfgGenSharedAssets,
+      cfgMockEnabled, cfgMockRecords, cfgMockPrefix, cfgMockMin, cfgMockMax,
+      cfgAuthProvider, cfgServerUrl, cfgRealm, cfgClientId, cfgAdminBaseUrl, cfgForwardedProto, cfgUseMockAuth,
+      cfgLoginUser, cfgLoginPass, cfgIdleTimeout, cfgSessionPersist, cfgCrossTabSync, cfgRefreshFocus,
+      cfgDisabledGuard, cfgDisabledCountdown, cfgProvisionEnabled, cfgProvisionAdapter, cfgAdminServiceUrl,
+      cfgIamEnabled, cfgIamUsers, cfgIamRoles, cfgIamRolePerms, cfgIamUserAccess, cfgIamUserPerms, cfgIamInheritance,
+      cfgModelPrefix, cfgEntityPrefix, cfgEntitySuffix, cfgEnumCasing, cfgBackendKind, cfgDoctorTimeout,
+      cfgKebabFiles, cfgTestingCi
+    ];
+
+    allConfigInputs.forEach(el => {
+      if (!el) return;
       el.addEventListener('input', () => {
-        if (cfgAuthProvider.value === 'keycloak') {
-          keycloakFields.style.display = 'block';
-        } else {
-          keycloakFields.style.display = 'none';
-        }
+        syncConditionalDisplays();
         updateConfigYamlFromForm();
       });
       el.addEventListener('change', () => {
-        if (cfgAuthProvider.value === 'keycloak') {
-          keycloakFields.style.display = 'block';
-        } else {
-          keycloakFields.style.display = 'none';
-        }
+        syncConditionalDisplays();
         updateConfigYamlFromForm();
       });
     });
 
-    // Two-way sync: YAML Editor -> Form
+    // Two-way sync: YAML Editor -> Form Controls
     configYamlEditor.addEventListener('input', () => {
       updateYamlGutterAndLines();
       const txt = configYamlEditor.value;
@@ -3163,24 +4201,145 @@ iam:
         virtualFS['my-app'].children.config.children['crudforge.config.yml'].content = txt;
       }
 
-      // Simple real-time extraction to update visual inputs
-      const matchFile = txt.match(/file:\s*([^\n\r]+)/);
-      if (matchFile && matchFile[1]) cfgInputFile.value = matchFile[1].trim();
-
-      const matchType = txt.match(/type:\s*([^\n\r]+)/);
-      if (matchType && matchType[1]) cfgInputType.value = matchType[1].trim();
-
-      const matchRendering = txt.match(/rendering:\s*([^\n\r]+)/);
-      if (matchRendering && matchRendering[1]) cfgRendering.value = matchRendering[1].trim();
-
-      const matchPrimary = txt.match(/primary:\s*"([^"]+)"/);
-      if (matchPrimary && matchPrimary[1]) cfgThemePrimary.value = matchPrimary[1].trim();
-
-      const matchProvider = txt.match(/provider:\s*([^\n\r]+)/);
-      if (matchProvider && matchProvider[1]) {
-        cfgAuthProvider.value = matchProvider[1].trim();
-        keycloakFields.style.display = cfgAuthProvider.value === 'keycloak' ? 'block' : 'none';
+      function getMatch(regex, fallback) {
+        const m = txt.match(regex);
+        return m && m[1] !== undefined ? m[1].trim().replace(/^["']|["']$/g, '') : fallback;
       }
+      function getBool(regex, fallback) {
+        const val = getMatch(regex, null);
+        if (val === null) return fallback;
+        return val.toLowerCase() === 'true';
+      }
+      function getNum(regex, fallback) {
+        const val = getMatch(regex, null);
+        if (val === null) return fallback;
+        const n = parseInt(val, 10);
+        return isNaN(n) ? fallback : n;
+      }
+
+      // Extract Project & Output
+      cfgProjectName.value = getMatch(/project:[\s\S]*?name:\s*([^\n\r#]+)/, cfgProjectName.value);
+      cfgRepoUrl.value = getMatch(/repositoryUrl:\s*([^\n\r#]*)/, cfgRepoUrl.value);
+      cfgInputFile.value = getMatch(/input:[\s\S]*?file:\s*([^\n\r#]+)/, cfgInputFile.value);
+      cfgInputType.value = getMatch(/input:[\s\S]*?type:\s*([^\n\r#]+)/, cfgInputType.value);
+      cfgOutputDir.value = getMatch(/output:[\s\S]*?directory:\s*([^\n\r#]+)/, cfgOutputDir.value);
+      cfgOverwritePolicy.value = getMatch(/overwritePolicy:\s*([^\n\r#]+)/, cfgOverwritePolicy.value);
+      cfgOutputStructure.value = getMatch(/output:[\s\S]*?structure:\s*([^\n\r#]+)/, cfgOutputStructure.value);
+      cfgEmbedConfig.checked = getBool(/embedConfig:\s*([^\n\r#]+)/, cfgEmbedConfig.checked);
+      cfgAiDocs.checked = getBool(/aiDocs:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgAiDocs.checked);
+      cfgTeamPack.checked = getBool(/teamPack:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgTeamPack.checked);
+      cfgGitEnabled.checked = getBool(/git:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgGitEnabled.checked);
+
+      // Extract Fuse & Rendering
+      cfgFuseEnabled.checked = getBool(/fuse:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgFuseEnabled.checked);
+      cfgRendering.value = getMatch(/rendering:\s*([^\n\r#]+)/, cfgRendering.value);
+      cfgCleanLayout.checked = getBool(/cleanLayout:\s*([^\n\r#]+)/, cfgCleanLayout.checked);
+      cfgIncludePrebuilt.checked = getBool(/includePrebuilt:\s*([^\n\r#]+)/, cfgIncludePrebuilt.checked);
+      cfgFolderType.value = getMatch(/folderType:\s*([^\n\r#]*)/, cfgFolderType.value);
+      cfgSidebarTheme.value = getMatch(/sidebarTheme:\s*([^\n\r#]+)/, cfgSidebarTheme.value);
+      cfgThemeScheme.value = getMatch(/scheme:\s*([^\n\r#]+)/, cfgThemeScheme.value);
+      cfgThemePrimary.value = getMatch(/primary:\s*["']?([^"'\n\r#]+)["']?/, cfgThemePrimary.value);
+      cfgThemeError.value = getMatch(/error:\s*["']?([^"'\n\r#]+)["']?/, cfgThemeError.value);
+      if (/^#[0-9A-Fa-f]{6}$/.test(cfgThemePrimary.value)) cfgThemePrimaryPicker.value = cfgThemePrimary.value;
+      if (/^#[0-9A-Fa-f]{6}$/.test(cfgThemeError.value)) cfgThemeErrorPicker.value = cfgThemeError.value;
+
+      // Extract UI & Form Modes
+      cfgViewMode.value = getMatch(/viewMode:\s*([^\n\r#]+)/, cfgViewMode.value);
+      cfgFormMode.value = getMatch(/formMode:\s*([^\n\r#]+)/, cfgFormMode.value);
+      cfgSearchMode.value = getMatch(/searchMode:\s*([^\n\r#]+)/, cfgSearchMode.value);
+      cfgCardBreakpoint.value = getNum(/cardBreakpointPx:\s*(\d+)/, cfgCardBreakpoint.value);
+      cfgSkeletonLoading.checked = getBool(/useSkeletonLoading:\s*([^\n\r#]+)/, cfgSkeletonLoading.checked);
+      cfgSnackbarTop.checked = getBool(/snackbarPositionTop:\s*([^\n\r#]+)/, cfgSnackbarTop.checked);
+      cfgGridMobile.value = getNum(/mobile:\s*(\d+)/, cfgGridMobile.value);
+      cfgGridTablet.value = getNum(/tablet:\s*(\d+)/, cfgGridTablet.value);
+      cfgGridDesktop.value = getNum(/desktop:\s*(\d+)/, cfgGridDesktop.value);
+
+      // Extract Form Behavior & Fields
+      cfgUppercaseInputs.checked = getBool(/uppercaseInputs:\s*([^\n\r#]+)/, cfgUppercaseInputs.checked);
+      cfgUpdateOn.value = getMatch(/updateOn:\s*([^\n\r#]+)/, cfgUpdateOn.value);
+      cfgShowErrorMessages.checked = getBool(/showErrorMessages:\s*([^\n\r#]+)/, cfgShowErrorMessages.checked);
+      cfgAutoFocusFirst.checked = getBool(/autoFocusFirstInput:\s*([^\n\r#]+)/, cfgAutoFocusFirst.checked);
+      cfgAuditEnabled.checked = getBool(/fields:[\s\S]*?audit:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgAuditEnabled.checked);
+      cfgAuditHideForms.checked = getBool(/hideInForms:\s*([^\n\r#]+)/, cfgAuditHideForms.checked);
+      cfgAuditHideFilters.checked = getBool(/hideInFilters:\s*([^\n\r#]+)/, cfgAuditHideFilters.checked);
+      cfgAuditHideSearch.checked = getBool(/hideInSearch:\s*([^\n\r#]+)/, cfgAuditHideSearch.checked);
+      cfgAuditHideLists.checked = getBool(/hideInLists:\s*([^\n\r#]+)/, cfgAuditHideLists.checked);
+      cfgAuditShowDetail.checked = getBool(/showInDetail:\s*([^\n\r#]+)/, cfgAuditShowDetail.checked);
+      cfgDateFormat.value = getMatch(/dateMediumFormat:\s*["']?([^"'\n\r#]+)["']?/, cfgDateFormat.value);
+      cfgNumberFormat.value = getMatch(/numberFormat:\s*["']?([^"'\n\r#]+)["']?/, cfgNumberFormat.value);
+      cfgStringCase.value = getMatch(/stringCase:\s*([^\n\r#]+)/, cfgStringCase.value);
+
+      // Extract API & Proxy
+      cfgApiBaseUrl.value = getMatch(/api:[\s\S]*?baseUrl:\s*["']?([^"'\n\r#]+)["']?/, cfgApiBaseUrl.value);
+      cfgApiMicroservice.value = getMatch(/api:[\s\S]*?microservice:\s*["']?([^"'\n\r#]*)/, cfgApiMicroservice.value);
+      cfgEndpointStyle.value = getMatch(/endpointStyle:\s*([^\n\r#]+)/, cfgEndpointStyle.value);
+      cfgDateLib.value = getMatch(/dateLibrary:\s*([^\n\r#]+)/, cfgDateLib.value);
+      cfgResponseType.value = getMatch(/responseType:\s*([^\n\r#]+)/, cfgResponseType.value);
+      cfgProxyWrite.value = getMatch(/proxy:[\s\S]*?write:\s*([^\n\r#]+)/, cfgProxyWrite.value);
+      cfgDevPort.value = getNum(/devServer:[\s\S]*?port:\s*(\d+)/, cfgDevPort.value);
+
+      // Extract Generate Toggles
+      cfgGenModels.checked = getBool(/models:\s*([^\n\r#]+)/, cfgGenModels.checked);
+      cfgGenServices.checked = getBool(/services:\s*([^\n\r#]+)/, cfgGenServices.checked);
+      cfgGenFormServices.checked = getBool(/formServices:\s*([^\n\r#]+)/, cfgGenFormServices.checked);
+      cfgGenRoutes.checked = getBool(/routes:\s*([^\n\r#]+)/, cfgGenRoutes.checked);
+      cfgGenEnums.checked = getBool(/enums:\s*([^\n\r#]+)/, cfgGenEnums.checked);
+      cfgGenRelationships.checked = getBool(/relationships:\s*([^\n\r#]+)/, cfgGenRelationships.checked);
+      cfgGenList.checked = getBool(/list:\s*([^\n\r#]+)/, cfgGenList.checked);
+      cfgGenCard.checked = getBool(/card:\s*([^\n\r#]+)/, cfgGenCard.checked);
+      cfgGenDetail.checked = getBool(/detail:\s*([^\n\r#]+)/, cfgGenDetail.checked);
+      cfgGenForm.checked = getBool(/form:\s*([^\n\r#]+)/, cfgGenForm.checked);
+      cfgGenFormPage.checked = getBool(/formPage:\s*([^\n\r#]+)/, cfgGenFormPage.checked);
+      cfgGenValidators.checked = getBool(/validators:\s*([^\n\r#]+)/, cfgGenValidators.checked);
+      cfgGenFilter.checked = getBool(/filter:\s*([^\n\r#]+)/, cfgGenFilter.checked);
+      cfgGenActions.checked = getBool(/actions:\s*([^\n\r#]+)/, cfgGenActions.checked);
+      cfgGenConstants.checked = getBool(/constants:\s*([^\n\r#]+)/, cfgGenConstants.checked);
+      cfgGenTests.checked = getBool(/tests:\s*([^\n\r#]+)/, cfgGenTests.checked);
+      cfgGenSharedAssets.checked = getBool(/sharedAssets:\s*([^\n\r#]+)/, cfgGenSharedAssets.checked);
+
+      // Extract Mock Data
+      cfgMockEnabled.checked = getBool(/mock:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgMockEnabled.checked);
+      cfgMockRecords.value = getNum(/recordsPerEntity:\s*(\d+)/, cfgMockRecords.value);
+      cfgMockPrefix.value = getMatch(/stringPrefix:\s*["']?([^"'\n\r#]+)["']?/, cfgMockPrefix.value);
+
+      // Extract Auth & Keycloak
+      cfgAuthProvider.value = getMatch(/auth:[\s\S]*?provider:\s*([^\n\r#]+)/, cfgAuthProvider.value);
+      cfgServerUrl.value = getMatch(/serverUrl:\s*["']?([^"'\n\r#]+)["']?/, cfgServerUrl.value);
+      cfgRealm.value = getMatch(/realm:\s*["']?([^"'\n\r#]+)["']?/, cfgRealm.value);
+      cfgClientId.value = getMatch(/clientId:\s*["']?([^"'\n\r#]+)["']?/, cfgClientId.value);
+      cfgAdminBaseUrl.value = getMatch(/adminBaseUrl:\s*["']?([^"'\n\r#]+)["']?/, cfgAdminBaseUrl.value);
+      cfgUseMockAuth.checked = getBool(/useMockAuth:\s*([^\n\r#]+)/, cfgUseMockAuth.checked);
+      cfgForwardedProto.value = getMatch(/forwardedProto:\s*["']?([^"'\n\r#]*)/, cfgForwardedProto.value);
+      cfgLoginUser.value = getMatch(/username:\s*["']?([^"'\n\r#]+)["']?/, cfgLoginUser.value);
+      cfgLoginPass.value = getMatch(/password:\s*["']?([^"'\n\r#]+)["']?/, cfgLoginPass.value);
+      cfgIdleTimeout.value = getNum(/idleTimeoutMs:\s*(\d+)/, cfgIdleTimeout.value);
+      cfgSessionPersist.checked = getBool(/persistAcrossReload:\s*([^\n\r#]+)/, cfgSessionPersist.checked);
+      cfgCrossTabSync.checked = getBool(/crossTabSync:\s*([^\n\r#]+)/, cfgCrossTabSync.checked);
+      cfgRefreshFocus.checked = getBool(/refreshOnFocus:\s*([^\n\r#]+)/, cfgRefreshFocus.checked);
+      cfgDisabledGuard.checked = getBool(/disabledAccount:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgDisabledGuard.checked);
+      cfgDisabledCountdown.value = getNum(/countdownSeconds:\s*(\d+)/, cfgDisabledCountdown.value);
+      cfgProvisionEnabled.checked = getBool(/provision:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgProvisionEnabled.checked);
+      cfgProvisionAdapter.value = getMatch(/adapter:\s*([^\n\r#]+)/, cfgProvisionAdapter.value);
+      cfgAdminServiceUrl.value = getMatch(/adminServiceUrl:\s*["']?([^"'\n\r#]+)["']?/, cfgAdminServiceUrl.value);
+
+      // Extract IAM
+      cfgIamEnabled.checked = getBool(/iam:[\s\S]*?enabled:\s*([^\n\r#]+)/, cfgIamEnabled.checked);
+      cfgIamUsers.checked = getBool(/users:\s*([^\n\r#]+)/, cfgIamUsers.checked);
+      cfgIamRoles.checked = getBool(/roles:\s*([^\n\r#]+)/, cfgIamRoles.checked);
+      cfgIamRolePerms.checked = getBool(/rolePermissions:\s*([^\n\r#]+)/, cfgIamRolePerms.checked);
+      cfgIamUserAccess.checked = getBool(/userAccess:\s*([^\n\r#]+)/, cfgIamUserAccess.checked);
+      cfgIamUserPerms.checked = getBool(/userPermissions:\s*([^\n\r#]+)/, cfgIamUserPerms.checked);
+      cfgIamInheritance.checked = getBool(/inheritance:\s*([^\n\r#]+)/, cfgIamInheritance.checked);
+
+      // Extract Conventions & Backend
+      cfgModelPrefix.value = getMatch(/modelInterfacePrefix:\s*["']?([^"'\n\r#]+)["']?/, cfgModelPrefix.value);
+      cfgEnumCasing.value = getMatch(/enumValueCasing:\s*([^\n\r#]+)/, cfgEnumCasing.value);
+      cfgBackendKind.value = getMatch(/backend:[\s\S]*?kind:\s*([^\n\r#]+)/, cfgBackendKind.value);
+      cfgDoctorTimeout.value = getNum(/doctor:[\s\S]*?timeoutMs:\s*(\d+)/, cfgDoctorTimeout.value);
+      cfgKebabFiles.checked = getBool(/kebabCaseFiles:\s*([^\n\r#]+)/, cfgKebabFiles.checked);
+      cfgTestingCi.checked = getBool(/testing:[\s\S]*?ci:\s*([^\n\r#]+)/, cfgTestingCi.checked);
+
+      syncConditionalDisplays();
     });
 
     configYamlEditor.addEventListener('scroll', () => {
@@ -3207,33 +4366,104 @@ iam:
       URL.revokeObjectURL(url);
     });
 
+    // Preset configurations
     configPresetSelect.addEventListener('change', (e) => {
       const preset = e.target.value;
       if (preset === 'default') {
+        cfgProjectName.value = 'CRUDForge App';
         cfgAuthProvider.value = 'none';
-        keycloakFields.style.display = 'none';
+        cfgIamEnabled.checked = false;
+        cfgMockEnabled.checked = false;
         cfgRendering.value = 'spa';
         cfgFuseEnabled.checked = true;
         cfgCleanLayout.checked = true;
+        cfgIncludePrebuilt.checked = false;
+        cfgFolderType.value = '';
+        cfgSidebarTheme.value = 'white';
         cfgOverwritePolicy.value = 'fail';
+        cfgOutputStructure.value = 'shared-central';
+        cfgViewMode.value = 'table';
+        cfgFormMode.value = 'sidebar';
+        cfgSearchMode.value = 'field';
+        cfgThemePrimary.value = '#791EFF';
+        cfgThemePrimaryPicker.value = '#791EFF';
+        cfgDevPort.value = 4200;
       } else if (preset === 'keycloak') {
+        cfgProjectName.value = 'CRUDForge Enterprise';
         cfgAuthProvider.value = 'keycloak';
-        keycloakFields.style.display = 'block';
+        cfgServerUrl.value = 'http://62.84.188.166:31740';
+        cfgRealm.value = 'CRUD-FORDGE';
+        cfgClientId.value = 'crudforge-client-QA';
+        cfgAdminBaseUrl.value = '/auth';
+        cfgLoginUser.value = 'crud';
+        cfgLoginPass.value = 'crud';
+        cfgSessionPersist.checked = true;
+        cfgCrossTabSync.checked = true;
+        cfgRefreshFocus.checked = true;
+        cfgDisabledGuard.checked = true;
+        cfgDisabledCountdown.value = 20;
         cfgIamEnabled.checked = true;
+        cfgIamUsers.checked = true;
+        cfgIamRoles.checked = true;
+        cfgIamRolePerms.checked = true;
+        cfgIamUserAccess.checked = true;
+        cfgIamUserPerms.checked = true;
+        cfgIamInheritance.checked = true;
         cfgRendering.value = 'spa';
         cfgFuseEnabled.checked = true;
         cfgOverwritePolicy.value = 'merge';
       } else if (preset === 'ssr') {
+        cfgProjectName.value = 'CRUDForge Universal SSR';
         cfgRendering.value = 'ssr';
+        cfgSsrHosts.value = 'localhost, 127.0.0.1, admin.example.com';
         cfgFuseEnabled.checked = true;
         cfgCleanLayout.checked = true;
+        cfgOverwritePolicy.value = 'fail';
       } else if (preset === 'pmb') {
+        cfgProjectName.value = 'PMB Development Test';
         cfgAuthProvider.value = 'keycloak';
-        keycloakFields.style.display = 'block';
         cfgServerUrl.value = 'http://62.84.188.166:31740';
         cfgRealm.value = 'CRUD-FORDGE';
+        cfgClientId.value = 'crudforge-client-QA';
+        cfgApiMicroservice.value = 'referenceModule';
+        cfgFolderType.value = 'micro-functions';
+        cfgOutputStructure.value = 'entity-folder';
+        cfgProvisionEnabled.checked = true;
+        cfgProvisionAdapter.value = 'admin-service';
+        cfgAdminServiceUrl.value = 'http://62.84.188.166:31740/';
         cfgIamEnabled.checked = false;
+        cfgOverwritePolicy.value = 'merge';
+      } else if (preset === 'full') {
+        cfgProjectName.value = 'CRUDForge Full Stack';
+        cfgAuthProvider.value = 'keycloak';
+        cfgServerUrl.value = 'http://62.84.188.166:31740';
+        cfgRealm.value = 'CRUD-FORDGE';
+        cfgClientId.value = 'crudforge-client-QA';
+        cfgIamEnabled.checked = true;
+        cfgIamUsers.checked = true;
+        cfgIamRoles.checked = true;
+        cfgIamRolePerms.checked = true;
+        cfgIamUserAccess.checked = true;
+        cfgIamUserPerms.checked = true;
+        cfgIamInheritance.checked = true;
+        cfgMockEnabled.checked = true;
+        cfgMockRecords.value = 10;
+        cfgMockPrefix.value = 'Mock ';
+        cfgTestingCi.checked = true;
+        cfgGenTests.checked = true;
+        cfgAuditEnabled.checked = true;
+        cfgOverwritePolicy.value = 'merge';
+      } else if (preset === 'mock') {
+        cfgProjectName.value = 'CRUDForge Mock Prototype';
+        cfgAuthProvider.value = 'none';
+        cfgIamEnabled.checked = false;
+        cfgMockEnabled.checked = true;
+        cfgMockRecords.value = 15;
+        cfgMockPrefix.value = 'Mock ';
+        cfgViewMode.value = 'card';
+        cfgFormMode.value = 'sidebar';
       }
+      syncConditionalDisplays();
       updateConfigYamlFromForm();
     });
 
@@ -3298,6 +4528,7 @@ iam:
       console.warn('Template init:', err);
     }
     try {
+      syncConditionalDisplays();
       updateConfigYamlFromForm();
     } catch (err) {
       console.error('Config init:', err);
