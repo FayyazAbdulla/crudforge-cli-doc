@@ -25,10 +25,16 @@ export default defineConfig({
           label: 'CRUDForge CLI',
           href: 'https://github.com/TeamCodeMe/crud-fordge',
         },
+        {
+          icon: 'seti:npm',
+          label: 'npm: @team-codeme/crud-forge',
+          href: 'https://www.npmjs.com/package/@team-codeme/crud-forge',
+        },
       ],
       customCss: ['./src/styles/brand.css'],
       components: {
         Hero: './src/components/CustomHero.astro',
+        SocialIcons: './src/components/SocialIcons.astro',
       },
       editLink: {
         baseUrl: 'https://github.com/TeamCodeMe/crud-fordge-doc/edit/main/',
