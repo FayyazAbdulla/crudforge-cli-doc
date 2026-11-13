@@ -1,6 +1,6 @@
 ---
 title: Install
-description: Install the CRUDForge CLI globally or use it from the monorepo.
+description: Install the CRUDForge CLI globally or run it via npx.
 ---
 
 ## Global install
@@ -39,15 +39,6 @@ my-app/
 │   └── crudforge.config.yml
 └── gdl/
     └── example.gdl
-```
-
-## From source (contributors)
-
-```bash
-git clone https://github.com/TeamCodeMe/crud-fordge.git
-cd crud-fordge
-npm install
-node cli.js --help
 ```
 
 ## Requirements
