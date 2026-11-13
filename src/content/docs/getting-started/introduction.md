@@ -3,7 +3,7 @@ title: Introduction
 description: What CRUDForge is and how this docs site relates to the CLI.
 ---
 
-**CRUDForge** (`@crudforge/cli`) is a developer-configurable Angular Material CRUD code generator. It maps **GDL** or **JDL** (JHipster Domain Language) schemas directly into high-fidelity standalone Angular 17+ components, types, services, and routes — scaffolded into a **Fuse** admin shell with SPA or SSR rendering.
+**CRUDForge** (`@team-codeme/crud-forge`) is a developer-configurable Angular Material CRUD code generator. It maps **GDL** or **JDL** (JHipster Domain Language) schemas directly into high-fidelity standalone Angular 17+ components, types, services, and routes — scaffolded into a **Fuse** admin shell with SPA or SSR rendering.
 
 This site is the **deployable product documentation**. It is separate from:
 

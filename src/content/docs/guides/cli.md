@@ -34,6 +34,22 @@ cd my-app
 crudforge generate [options]
 ```
 
+### Re-generating existing projects
+
+When updating schemas or re-running generation, use `--overwrite-policy merge` to preserve developer modifications and protect other microservices:
+
+```bash
+# Safe incremental regeneration
+crudforge generate --overwrite-policy merge
+
+# Target only a specific microservice from multi-source schemas
+crudforge generate --service procurement-module --overwrite-policy merge
+crudforge generate -s procurement-module -w merge
+
+# Dry-run preview before applying changes
+crudforge generate --dry-run
+```
+
 ### Positional generate (legacy)
 
 Explicitly specifies schema and target directory:
@@ -83,6 +99,21 @@ crudforge bootstrap --dry-run --preferences ./crudforge.config.yml --env-file ./
 crudforge bootstrap --cleanup --preferences ./crudforge.config.yml --env-file ./.env.qa
 ```
 
+## `crudforge doctor`
+
+Runs read-only project and environment diagnostics without modifying files:
+
+```bash
+# Standard local diagnostics
+crudforge doctor
+
+# Include live network probe checks
+crudforge doctor --live
+
+# Output machine-readable JSON results
+crudforge doctor --json
+```
+
 ## `crudforge init-config`
 
 Creates `crudforge.config.yml`, `example.jdl`, and `example.gdl` in the current directory (skipping existing files).
@@ -98,9 +129,11 @@ crudforge init-config
 | Flag | Short | Description |
 |------|-------|-------------|
 | `--preferences <path>` | `-p` | Path to a custom config file (YAML/JSON) overriding defaults. |
+| `--service <name>` | `-s` | Target only the specified service from `input.sources` during generation. |
 | `--microservice <name>` | `-m` | Explicit microservice name for API route prefixes (`/services/<name>`). |
 | `--dry-run` | `-d` | Preview files to be created and diff modifications without writing to disk. |
 | `--overwrite-policy <policy>` | `-w` | Conflict policy: `fail` (default), `overwrite`, `skip`, `ask`, `merge`. |
+| `--json` | | Output JSON outcome/diagnostics on stdout; progress on stderr. |
 | `--fuse` | | Scaffold and generate entities into Fuse Angular starter layout. |
 | `--fuse-path <path>` | | Path to a local Fuse starter pack directory. |
 | `--clean-layout` | | Hide all pre-built Fuse UI demo components for a minimal dashboard. |

@@ -5,10 +5,16 @@ description: Install the CRUDForge CLI globally or use it from the monorepo.
 
 ## Global install
 
-Install `@crudforge/cli` globally via npm:
+Install `@team-codeme/crud-forge` globally via npm:
 
 ```bash
-npm install -g @crudforge/cli
+npm install -g @team-codeme/crud-forge
+```
+
+Or run directly without installing using `npx`:
+
+```bash
+npx @team-codeme/crud-forge init my-app
 ```
 
 Verify installation:

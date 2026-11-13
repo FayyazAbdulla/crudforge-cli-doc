@@ -3280,7 +3280,7 @@ relationship OneToMany {
     });
 
     document.getElementById('copyCliBtn').addEventListener('click', () => {
-      const cmd = `npx @crudforge/cli generate ./gdl/example.gdl ./my-app --fuse --clean-layout`;
+      const cmd = `npx @team-codeme/crud-forge generate ./gdl/example.gdl ./my-app --fuse --clean-layout`;
       navigator.clipboard.writeText(cmd);
       const btn = document.getElementById('copyCliBtn');
       const orig = btn.innerHTML;
@@ -3596,7 +3596,7 @@ ${isMock ? `<span class="ansi-green">✓</span> Seeded mock dataset: ${cfgMockRe
 `);
         } else if (sub === 'test') {
           appendTermLine(`
-<span class="ansi-dim">> @crudforge/cli test</span>
+<span class="ansi-dim">> @team-codeme/crud-forge test</span>
 <span class="ansi-dim">> mocha --recursive test/</span>
 
   <span class="ansi-green">✔</span> Schema parser: handles GDL and JDL syntax (<span class="ansi-dim">12ms</span>)

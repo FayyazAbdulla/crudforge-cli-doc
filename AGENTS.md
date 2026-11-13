@@ -1,6 +1,6 @@
 # CRUDForge Docs — agent map
 
-This is the **documentation site** for `@crudforge/cli` (Astro Starlight).  
+This is the **documentation site** for `@team-codeme/crud-forge` (Astro Starlight).  
 Sibling product repo: `../crud-fordge` (override with `CRUDFORGE_CLI_PATH`).
 
 ## Commands

@@ -7,7 +7,7 @@ const BRAND = '#791EFF';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://docs.crudforge.dev',
+  site: 'https://docs-crudforgecli.teamcodeme.com',
   integrations: [
     starlight({
       title: 'CRUDForge',
@@ -107,14 +107,14 @@ export default defineConfig({
           tag: 'meta',
           attrs: {
             property: 'og:image',
-            content: 'https://docs.crudforge.dev/og-poster.jpg',
+            content: 'https://docs-crudforgecli.teamcodeme.com/og-poster.jpg',
           },
         },
         {
           tag: 'meta',
           attrs: {
             name: 'twitter:image',
-            content: 'https://docs.crudforge.dev/og-poster.jpg',
+            content: 'https://docs-crudforgecli.teamcodeme.com/og-poster.jpg',
           },
         },
         {

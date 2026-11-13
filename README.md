@@ -1,6 +1,6 @@
 # CRUDForge Docs
 
-Deployable product documentation for **[@crudforge/cli](https://github.com/TeamCodeMe/crud-fordge)** — Astro **Starlight**, brand violet `#791EFF`.
+Deployable product documentation for **[@team-codeme/crud-forge](https://www.npmjs.com/package/@team-codeme/crud-forge)** — Astro **Starlight**, brand violet `#791EFF`.
 
 ## Quick start
 
