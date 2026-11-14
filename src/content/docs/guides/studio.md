@@ -3,11 +3,11 @@ title: Schema & Config Studio
 description: Interactive visual editor for JDL/GDL entity diagrams and terminal configuration builder.
 ---
 
-import { LinkButton } from '@astrojs/starlight/components';
-
-<LinkButton href="/studio" variant="primary" icon="rocket" target="_blank">
-  Launch Interactive Studio
-</LinkButton>
+<p>
+  <a class="sl-link-button not-content primary" href="https://crudforge-studio.teamcodeme.com/" target="_blank" rel="noopener noreferrer">
+    Launch Interactive Studio ↗
+  </a>
+</p>
 
 CRUDForge Studio is a standalone Angular app with an in-browser suite of developer tools featuring:
 
@@ -57,9 +57,11 @@ The Terminal Config Studio provides a terminal aesthetic with visual configurati
   - View animated console outputs, spinners, and directory scaffold previews.
   - Copy ready-to-run shell scripts or CLI generation commands directly to your clipboard.
 
-<LinkButton href="/studio" variant="secondary" icon="external">
-  Open Studio in Full Screen
-</LinkButton>
+<p>
+  <a class="sl-link-button not-content secondary" href="https://crudforge-studio.teamcodeme.com/" target="_blank" rel="noopener noreferrer">
+    Open Studio in Full Screen ↗
+  </a>
+</p>
 
 ## Run Studio independently
 

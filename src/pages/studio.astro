@@ -1,7 +1,7 @@
 ---
 // Compatibility entry point only. Studio is built in ../crudforge-studio.
 const configuredUrl = import.meta.env.PUBLIC_STUDIO_URL;
-const studioUrl = configuredUrl || (import.meta.env.DEV ? 'http://127.0.0.1:4200' : 'https://crudforge-studio.teamcodeme.com');
+const studioUrl = configuredUrl || 'https://crudforge-studio.teamcodeme.com/';
 if (studioUrl && !/^https?:\/\//.test(studioUrl)) {
   throw new Error('PUBLIC_STUDIO_URL must be an absolute HTTP(S) URL');
 }
@@ -21,7 +21,7 @@ if (studioUrl && !/^https?:\/\//.test(studioUrl)) {
   </head>
   <body>
     <h1>Studio has moved to its own app</h1>
-    {studioUrl ? <p><a href={studioUrl}>Open CRUDForge Studio</a></p> : <p>The standalone Studio deployment link will be available here once it is configured.</p>}
+    {studioUrl ? <p><a href={studioUrl} target="_blank" rel="noopener noreferrer">Open CRUDForge Studio</a></p> : <p>The standalone Studio deployment link will be available here once it is configured.</p>}
     <p><a href="/guides/studio/">Read the Studio guide</a> · <a href="/">Return to documentation</a></p>
   </body>
 </html>

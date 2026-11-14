@@ -52,7 +52,7 @@ export default defineConfig({
         {
           label: 'Interactive Tools',
           items: [
-            { label: '✨ Open Studio (Live)', link: '/studio', badge: { text: 'New', variant: 'tip' } },
+            { label: '✨ Open Studio (Live)', link: 'https://crudforge-studio.teamcodeme.com/', badge: { text: 'New', variant: 'tip' }, attrs: { target: '_blank', rel: 'noopener noreferrer' } },
             { label: 'Studio User Guide', slug: 'guides/studio' },
           ],
         },
