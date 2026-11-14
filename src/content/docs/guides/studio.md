@@ -9,7 +9,7 @@ import { LinkButton } from '@astrojs/starlight/components';
   Launch Interactive Studio
 </LinkButton>
 
-CRUDForge Studio is an in-browser suite of developer tools featuring:
+CRUDForge Studio is a standalone Angular app with an in-browser suite of developer tools featuring:
 
 1. **Schema Studio**: Live interactive ERD diagram visualizer and code editor for **JDL** and **GDL** domain schemas.
 2. **Terminal Config Studio**: Terminal-themed visual configuration inspector and CLI simulator for `crudforge.config.yml`.
@@ -60,3 +60,17 @@ The Terminal Config Studio provides a terminal aesthetic with visual configurati
 <LinkButton href="/studio" variant="secondary" icon="external">
   Open Studio in Full Screen
 </LinkButton>
+
+## Run Studio independently
+
+Studio now lives in the sibling `crudforge-studio` project and has its own dependencies and build.
+
+```sh
+cd ../crudforge-studio
+npm install
+npm start
+```
+
+Open `http://127.0.0.1:4200`. The terminal simulates CLI commands in your browser; it does not run commands on your computer.
+
+The documentation site's `/studio` entry point opens the separate app. Production opens [crudforge-studio.teamcodeme.com](https://crudforge-studio.teamcodeme.com). To override it, set `PUBLIC_STUDIO_URL` before building the docs. During local development it opens port 4200.

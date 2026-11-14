@@ -67,3 +67,7 @@ npx vercel --prod   # production
 ```
 
 Or connect the GitHub repo; workflow: `.github/workflows/docs.yml`.
+
+## Standalone Studio
+
+The Studio application lives in `../crudforge-studio` and runs independently with `npm install` and `npm start` (port 4200). This repository contains only the Studio guide and a compatibility `/studio` entry point. Set `PUBLIC_STUDIO_URL` to the deployed application's absolute URL when building the docs. Production defaults to `https://crudforge-studio.teamcodeme.com`; local development opens `http://127.0.0.1:4200`.
