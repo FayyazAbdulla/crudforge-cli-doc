@@ -57,11 +57,13 @@
           <span class="cf-terminal__dot cf-terminal__dot--g"></span>
           <span class="cf-terminal__title">crudforge</span>
         </div>
-        <pre class="cf-terminal__body"><code><span class="cf-terminal__banner">  ____ ____  _   _ ____  _____     
- / ___|  _ \| | | |  _ \|  ___|___ 
-| |   | |_) | | | | | | | |_ / _ \
-| |___|  _ &lt;| |_| | |_| |  _| (_) |
- \____|_| \_\___/|____/|_|  \___/ </span>
+        <pre class="cf-terminal__body"><code><span class="cf-terminal__banner"> ██████╗██████╗ ██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗  ██████╗ ███████╗
+██╔════╝██╔══██╗██║   ██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝
+██║     ██████╔╝██║   ██║██║  ██║█████╗  ██║   ██║██████╔╝██║  ███╗█████╗
+██║     ██╔══██╗██║   ██║██║  ██║██╔══╝  ██║   ██║██╔══██╗██║   ██║██╔══╝
+╚██████╗██║  ██║╚██████╔╝██████╔╝██║     ╚██████╔╝██║  ██║╚██████╔╝███████╗
+ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+<span class="cf-terminal__tagline">       ⚡ High-Performance Angular CRUD Generator · Developed by Team CodeMe</span></span>
 <span class="cf-terminal__prompt">$</span> <span class="cf-terminal__cmd">npx @team-codeme/crud-forge generate</span>
 <span class="cf-terminal__ok">✓</span> Discovered config & JDL domain schema
 <span class="cf-terminal__ok">✓</span> Fuse Angular 17+ shell ready
@@ -329,13 +331,24 @@
 
   .cf-terminal__banner {
     display: block;
-    color: #c4a8ff;
-    font-size: 0.65rem;
+    color: #22D3EE;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: clamp(0.36rem, 1.25vw, 0.62rem);
     line-height: 1.15;
     margin-bottom: 0.6rem;
-    text-shadow: 0 0 12px rgba(121, 30, 255, 0.65);
+    text-shadow: 0 0 12px rgba(34, 211, 238, 0.55), 0 0 24px rgba(34, 211, 238, 0.25);
     user-select: none;
-    opacity: 0.9;
+    white-space: pre;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    opacity: 0.95;
+  }
+  .cf-terminal__tagline {
+    display: block;
+    color: #C084FC;
+    font-weight: 700;
+    margin-top: 0.4rem;
+    text-shadow: 0 0 10px rgba(192, 132, 252, 0.7);
   }
   .cf-terminal__prompt { color: #c4a8ff; }
   .cf-terminal__cmd { color: #e879f9; }
