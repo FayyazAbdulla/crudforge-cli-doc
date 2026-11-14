@@ -9,6 +9,10 @@ hero:
       link: /getting-started/introduction/
       icon: right-arrow
       variant: primary
+    - text: ⚡ Generate & Regenerate Quick Start
+      link: /guides/generate-regenerate/
+      icon: rocket
+      variant: secondary
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
@@ -17,6 +21,9 @@ import InstallBar from '../../components/InstallBar.astro';
 ## What you get
 
 <CardGrid stagger>
+  <Card title="⚡ Generate & Regenerate Quick Start" icon="rocket">
+    Step-by-step workflows for [generating, importing, and regenerating code](/guides/generate-regenerate/) with 3-way merge, single-entity selection, and XML changelogs.
+  </Card>
   <Card title="✨ Interactive Schema & Config Studio" icon="pencil">
     Visual split-pane [JDL/GDL Studio](/studio) with live ERD diagram graph and terminal-themed config builder.
   </Card>

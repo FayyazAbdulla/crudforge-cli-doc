@@ -128,11 +128,19 @@ crudforge init-config
 
 | Flag | Short | Description |
 |------|-------|-------------|
-| `--preferences <path>` | `-p` | Path to a custom config file (YAML/JSON) overriding defaults. |
+| `--mode <mode>` | | Generation mode: `full` (Fuse app + entities) or `entity-only`. |
+| `--entity-only` | | Generate entity code only without starter scaffolding. |
 | `--service <name>` | `-s` | Target only the specified service from `input.sources` during generation. |
-| `--microservice <name>` | `-m` | Explicit microservice name for API route prefixes (`/services/<name>`). |
+| `--entity <name>` | `-e`, `--entities` | Target only the specified entity or comma-separated list of entities. |
+| `--register` | | Register generated entities in Fuse routes, navigation, and screen catalog (default: true). |
+| `--skip-registration` | `--no-register` | Skip automatic route/nav registration and print manual integration snippets. |
 | `--dry-run` | `-d` | Preview files to be created and diff modifications without writing to disk. |
-| `--overwrite-policy <policy>` | `-w` | Conflict policy: `fail` (default), `overwrite`, `skip`, `ask`, `merge`. |
+| `--overwrite-policy <policy>` | `-w` | Conflict policy: `merge` (recommended), `skip`, `fail`, `ask`, `overwrite`. |
+| `--allow-destructive` | | Authorize removing entities from disk that were deleted from the schema. |
+| `--reset-history` | | Reset XML generation history and baselines. |
+| `--upgrade-starter` | | Explicitly re-copy/upgrade the Fuse starter pack into an existing project. |
+| `--preferences <path>` | `-p` | Path to a custom config file (YAML/JSON) overriding defaults. |
+| `--microservice <name>` | `-m` | Explicit microservice name for API route prefixes (`/services/<name>`). |
 | `--json` | | Output JSON outcome/diagnostics on stdout; progress on stderr. |
 | `--fuse` | | Scaffold and generate entities into Fuse Angular starter layout. |
 | `--fuse-path <path>` | | Path to a local Fuse starter pack directory. |

@@ -46,6 +46,7 @@ export default defineConfig({
             { label: 'Introduction', slug: 'getting-started/introduction' },
             { label: 'Install', slug: 'getting-started/install' },
             { label: 'Generate your first app', slug: 'getting-started/first-app' },
+            { label: '⚡ Generate & Regenerate', slug: 'guides/generate-regenerate', badge: { text: 'Quick Start', variant: 'success' } },
           ],
         },
         {
@@ -76,6 +77,7 @@ export default defineConfig({
         {
           label: 'Guides',
           items: [
+            { label: 'Generate & Regenerate', slug: 'guides/generate-regenerate' },
             { label: 'CLI commands', slug: 'guides/cli' },
             { label: 'Configuration', slug: 'guides/configuration' },
             { label: 'Schema & Config Studio', slug: 'guides/studio' },

@@ -89,6 +89,9 @@ crudforge generate --overwrite-policy merge      # Preserve matching // cforge- 
 crudforge generate --overwrite-policy overwrite  # Explicitly replace generated files
 ```
 
+> [!TIP]
+> For a comprehensive walkthrough of 3-way merge, selective entity generation, and multi-service workflows, see the [Generate & Regenerate: Quick Start](/guides/generate-regenerate/) guide.
+
 > [!NOTE]
 > Source configuration (`config/crudforge.config.yml`) and schema files (`gdl/*`) are protected and never overwritten.
 
